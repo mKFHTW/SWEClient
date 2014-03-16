@@ -12,6 +12,8 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Net;
+using System.Web;
 
 namespace SWEClient
 {
@@ -20,11 +22,13 @@ namespace SWEClient
     /// </summary>
     public partial class MainWindow : Window
     {
-        ViewModels.SearchViewModel viewModel = new ViewModels.SearchViewModel();
+        //WebClient web = new WebClient();
+        ViewModels.SearchViewModel viewModel = new ViewModels.SearchViewModel();        
+
         public MainWindow()
         {
             InitializeComponent();
-            base.DataContext = viewModel;
+            base.DataContext = viewModel;            
         }
     }
 }

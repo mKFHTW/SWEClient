@@ -6,6 +6,11 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
+using System.Xml;
+using System.Xml.Linq;
+using System.Net;
+using System.Web;
+using System.IO;
 
 namespace SWEClient.ViewModels
 {
@@ -13,11 +18,17 @@ namespace SWEClient.ViewModels
     {
         Models.Firma Firma;
         Models.Person Person;
+        WebRequest request;
+        Stream dataStream;
 
         public SearchViewModel()
         {
             Firma = new Models.Firma();
             Person = new Models.Person();
+
+            request = WebRequest.Create("http://localhost:8080");            
+            request.Method = "POST";
+            request.ContentType = "text/xml";
         }
         #region PropertyChangedLogic
         public string Name 
@@ -89,7 +100,18 @@ namespace SWEClient.ViewModels
         #region FunctionsToCall
         public void SearchFirma()
         {
-            MessageBox.Show("Firma" );
+            //MessageBox.Show("Firma " + Firma.Name + " " + Firma.UID);
+            XElement xml =
+                new XElement("Search",
+                    new XElement("Firma",
+                        new XElement("Name", Firma.Name),
+                        new XElement("UID", Firma.UID)
+                        )
+                        );
+
+            byte[] data = Encoding.UTF8.GetBytes(xml.ToString());
+            Send(data);
+            Receive();
         }
 
         public void SearchPerson()
@@ -103,5 +125,25 @@ namespace SWEClient.ViewModels
         }
         #endregion
         #endregion
+
+        public void Send(byte[] data)
+        {
+            request.ContentLength = data.Length;
+            dataStream = request.GetRequestStream();
+            dataStream.Write(data, 0, data.Length);
+            dataStream.Close();
+        }
+
+        public void Receive()
+        {
+            WebResponse response = request.GetResponse();
+            dataStream = response.GetResponseStream();
+            StreamReader reader = new StreamReader(dataStream);
+            string responseFromServer = reader.ReadToEnd();
+            MessageBox.Show(responseFromServer);
+            reader.Close();
+            dataStream.Close();
+            response.Close();
+        }
     }
 }

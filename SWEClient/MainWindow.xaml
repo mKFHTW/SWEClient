@@ -16,10 +16,18 @@
                 </GroupBox>
             </TabItem>
             <TabItem Header="Firma">
-                <Grid Background="#FFE5E5E5"/>
+                <GroupBox Header="Suchfilter" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Height="166" Width="596">
+                    <Grid HorizontalAlignment="Left" Height="144" VerticalAlignment="Top" Width="611" Margin="0,0,-2,0">
+                        <Label Content="Name" HorizontalAlignment="Left" Margin="10,19,0,0" VerticalAlignment="Top"/>
+                        <Label Content="UID" HorizontalAlignment="Left" Margin="10,60,0,0" VerticalAlignment="Top"/>
+                        <TextBox HorizontalAlignment="Left" Height="23" Margin="86,23,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="467" Text="{Binding Name}"/>
+                        <TextBox HorizontalAlignment="Left" Height="23" Margin="86,64,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="467" Text="{Binding UID}"/>
+                        <Button Content="Suche" HorizontalAlignment="Left" Margin="478,114,0,0" VerticalAlignment="Top" Width="75" Command="{Binding GeneralCommand}" CommandParameter="Firma"/>
+                    </Grid>
+                </GroupBox>
             </TabItem>
             <TabItem Header="Rechung">
-                <Grid Background="#FFE5E5E5"/>
+                
             </TabItem>
         </TabControl>
 
