@@ -20,9 +20,11 @@ namespace SWEClient
     /// </summary>
     public partial class MainWindow : Window
     {
+        ViewModels.SearchViewModel viewModel = new ViewModels.SearchViewModel();
         public MainWindow()
         {
             InitializeComponent();
+            base.DataContext = viewModel;
         }
     }
 }
