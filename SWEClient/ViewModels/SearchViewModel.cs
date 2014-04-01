@@ -17,18 +17,12 @@ namespace SWEClient.ViewModels
     class SearchViewModel : INotifyPropertyChanged
     {
         Models.Firma Firma;
-        Models.Person Person;
-        WebRequest request;
-        Stream dataStream;
+        Models.Person Person;        
 
         public SearchViewModel()
         {
             Firma = new Models.Firma();
-            Person = new Models.Person();
-
-            request = WebRequest.Create("http://localhost:8080");            
-            request.Method = "POST";
-            request.ContentType = "text/xml";
+            Person = new Models.Person();            
         }
         #region PropertyChangedLogic
         public string Name 
@@ -110,8 +104,8 @@ namespace SWEClient.ViewModels
                         );
 
             byte[] data = Encoding.UTF8.GetBytes(xml.ToString());
-            Send(data);
-            Receive();
+
+            Proxy.Instance.Send(data);
         }
 
         public void SearchPerson()
@@ -124,26 +118,6 @@ namespace SWEClient.ViewModels
             MessageBox.Show("Rechnung");
         }
         #endregion
-        #endregion
-
-        public void Send(byte[] data)
-        {
-            request.ContentLength = data.Length;
-            dataStream = request.GetRequestStream();
-            dataStream.Write(data, 0, data.Length);
-            dataStream.Close();
-        }
-
-        public void Receive()
-        {
-            WebResponse response = request.GetResponse();
-            dataStream = response.GetResponseStream();
-            StreamReader reader = new StreamReader(dataStream);
-            string responseFromServer = reader.ReadToEnd();
-            MessageBox.Show(responseFromServer);
-            reader.Close();
-            dataStream.Close();
-            response.Close();
-        }
+        #endregion             
     }
 }

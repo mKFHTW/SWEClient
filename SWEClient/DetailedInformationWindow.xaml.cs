@@ -10,24 +10,18 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
 using System.Windows.Shapes;
-using System.Net;
-using System.Web;
 
 namespace SWEClient
 {
     /// <summary>
-    /// Interaktionslogik für MainWindow.xaml
+    /// Interaktionslogik für DetailedInformationWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class DetailedInformationWindow : Window
     {
-        ViewModels.SearchViewModel viewModel = new ViewModels.SearchViewModel();        
-
-        public MainWindow()
+        public DetailedInformationWindow()
         {
             InitializeComponent();
-            base.DataContext = viewModel;            
         }
     }
 }

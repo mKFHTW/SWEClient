@@ -1,4 +1,5 @@
 ﻿<Window x:Class="SWEClient.MainWindow"
+        xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="MainWindow" Height="323" Width="659">
@@ -9,8 +10,8 @@
                     <Grid x:Name="gridSuchfilter" HorizontalAlignment="Left" Height="144" VerticalAlignment="Top" Width="611" Margin="0,0,-2,0">
                         <Label x:Name="lbVorname" Content="Vorname" HorizontalAlignment="Left" Margin="10,19,0,0" VerticalAlignment="Top"/>
                         <Label x:Name="lbNachname" Content="Nachname" HorizontalAlignment="Left" Margin="10,60,0,0" VerticalAlignment="Top"/>
-                        <TextBox x:Name="tBoxVorname" HorizontalAlignment="Left" Height="23" Margin="86,23,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="467" Text="{Binding Vorname}"/>
-                        <TextBox x:Name="tBoxNachname" HorizontalAlignment="Left" Height="23" Margin="86,64,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="467" Text="{Binding Nachname}"/>
+                        <xctk:WatermarkTextBox Watermark="Vorname eingeben .." x:Name="tBoxVorname" HorizontalAlignment="Left" Height="23" Margin="86,23,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="467" Text="{Binding Vorname}"/>
+                        <xctk:WatermarkTextBox Watermark="Nachname eingeben .." x:Name="tBoxNachname" HorizontalAlignment="Left" Height="23" Margin="86,64,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="467" Text="{Binding Nachname}"/>
                         <Button x:Name="btnSuchfilterSuche" Content="Suche" HorizontalAlignment="Left" Margin="478,114,0,0" VerticalAlignment="Top" Width="75" Command="{Binding GeneralCommand}" CommandParameter="Person"/>
                     </Grid>
                 </GroupBox>
@@ -20,8 +21,8 @@
                     <Grid HorizontalAlignment="Left" Height="144" VerticalAlignment="Top" Width="611" Margin="0,0,-2,0">
                         <Label Content="Name" HorizontalAlignment="Left" Margin="10,19,0,0" VerticalAlignment="Top"/>
                         <Label Content="UID" HorizontalAlignment="Left" Margin="10,60,0,0" VerticalAlignment="Top"/>
-                        <TextBox HorizontalAlignment="Left" Height="23" Margin="86,23,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="467" Text="{Binding Name}"/>
-                        <TextBox HorizontalAlignment="Left" Height="23" Margin="86,64,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="467" Text="{Binding UID}"/>
+                        <xctk:WatermarkTextBox Watermark="Firmenname eingeben .." HorizontalAlignment="Left" Height="23" Margin="86,23,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="467" Text="{Binding Name}"/>
+                        <xctk:WatermarkTextBox Watermark="UID eingeben .." HorizontalAlignment="Left" Height="23" Margin="86,64,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="467" Text="{Binding UID}"/>
                         <Button Content="Suche" HorizontalAlignment="Left" Margin="478,114,0,0" VerticalAlignment="Top" Width="75" Command="{Binding GeneralCommand}" CommandParameter="Firma"/>
                     </Grid>
                 </GroupBox>

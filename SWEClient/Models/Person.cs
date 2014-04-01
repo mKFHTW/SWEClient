@@ -6,9 +6,8 @@ using System.Threading.Tasks;
 
 namespace SWEClient.Models
 {
-    class Person
-    {
-        public int ID { get; set; }
+    class Person : Kontakt
+    {        
         public string Vorname { get; set; }
         public string Nachname { get; set; }
     }
