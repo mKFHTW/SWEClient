@@ -5,6 +5,7 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace SWEClient
 {
@@ -40,6 +41,7 @@ namespace SWEClient
             dataStream = request.GetRequestStream();
             dataStream.Write(data, 0, data.Length);
             dataStream.Close();
+            //Receive();
         }
 
         public void Receive()
@@ -48,7 +50,7 @@ namespace SWEClient
             dataStream = response.GetResponseStream();
             StreamReader reader = new StreamReader(dataStream);
             Response = reader.ReadToEnd();
-            //MessageBox.Show(responseFromServer);
+            MessageBox.Show(Response);
             reader.Close();
             dataStream.Close();
             response.Close();
