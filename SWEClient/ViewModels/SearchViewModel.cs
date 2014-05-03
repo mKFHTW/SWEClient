@@ -19,6 +19,8 @@ namespace SWEClient.ViewModels
     {
         Models.Firma Firma;
         Models.Person Person;
+
+        #region ObservableCollections
         ObservableCollection<Models.Firma> FirmaCollection;
 
         public ObservableCollection<Models.Firma> Firmen
@@ -29,11 +31,23 @@ namespace SWEClient.ViewModels
             }
         }
 
+        ObservableCollection<Models.Person> PersonCollection;
+
+        public ObservableCollection<Models.Person> Personen
+        {
+            get
+            {
+                return PersonCollection;
+            }
+        }
+        #endregion
+
         public SearchViewModel()
         {
             Firma = new Models.Firma();
             Person = new Models.Person();
             FirmaCollection = new ObservableCollection<Models.Firma>();
+            PersonCollection = new ObservableCollection<Models.Person>();
         }
 
         #region PropertyChangedLogic
@@ -60,6 +74,9 @@ namespace SWEClient.ViewModels
             get { return Person.Nachname; }
             set { Person.Nachname = value; RaisePropertyChanged("Nachname"); }
         }
+
+        public Models.Firma SelectedFirma { set { Firma = value; } }
+        public Models.Person SelectedPerson { set { Person = value; } }
 
         public event PropertyChangedEventHandler PropertyChanged;
         private void RaisePropertyChanged(string propertyName)
@@ -100,10 +117,38 @@ namespace SWEClient.ViewModels
                 case "Rechnung":
                     SearchRechnung();
                     break;
+                case "ViewFirma":
+                    lViewDoubleClickFirma();
+                    break;
+                case "ViewPerson":
+                    lViewDoubleClickPerson();
+                    break;
+                case "AddFirma":
+                    lViewDoubleClickFirma();
+                    break;
+                case "AddPerson":
+                    lViewDoubleClickPerson();
+                    break;
+                default:
+                    //DetailedInformationWindow window = new DetailedInformationWindow();
+                    //window.Show();
+                    break;
             }
-        }
+        }               
 
         #region FunctionsToCall
+        public void lViewDoubleClickFirma()
+        {
+            DetailedInformationWindow window = new DetailedInformationWindow(Firma);
+            window.Show();
+        }
+
+        public void lViewDoubleClickPerson()
+        {
+            DetailedInformationWindow window = new DetailedInformationWindow(Person);
+            window.Show();
+        }        
+
         public void SearchFirma()
         {
             //MessageBox.Show("Firma " + Firma.Name + " " + Firma.UID);

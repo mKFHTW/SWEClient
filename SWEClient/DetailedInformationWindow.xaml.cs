@@ -19,9 +19,14 @@ namespace SWEClient
     /// </summary>
     public partial class DetailedInformationWindow : Window
     {
-        public DetailedInformationWindow()
-        {
+        ViewModels.DetailedInformationWindowViewModel viewModel;
+
+        public DetailedInformationWindow(Models.Kontakt param)
+        {            
             InitializeComponent();
-        }
+
+            viewModel = new ViewModels.DetailedInformationWindowViewModel(param);
+            base.DataContext = viewModel;
+        }             
     }
 }
