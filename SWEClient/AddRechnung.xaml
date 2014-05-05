@@ -1,0 +1,28 @@
+﻿<Window x:Class="SWEClient.AddRechnung"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+        Title="AddRechnung" Height="695" Width="350">
+    <Grid Height="663" VerticalAlignment="Top">
+        <xctk:WatermarkTextBox Watermark="Kunden eingeben .." HorizontalAlignment="Left" Height="23" Margin="10,23,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="312" Text="{Binding Kundenname}"/>
+        <xctk:WatermarkTextBox Watermark="Stk .." HorizontalAlignment="Left" Height="23" Margin="10,70,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="36" Text="{Binding Stk}"/>
+        <xctk:WatermarkTextBox Watermark="Artikel eingeben .." HorizontalAlignment="Left" Height="23" Margin="51,70,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="163" Text="{Binding Artikel}"/>
+        <xctk:WatermarkTextBox Watermark="Preis .." HorizontalAlignment="Left" Height="23" Margin="219,70,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="72" Text="{Binding Preis}"/>
+        <Button Content="+" HorizontalAlignment="Left" Margin="296,71,0,0" VerticalAlignment="Top" Width="26" Command="{Binding GeneralCommand}" CommandParameter="AddLine"/>
+        <DatePicker HorizontalAlignment="Left" Height="23" Margin="10,101,0,0" VerticalAlignment="Top" SelectedDate="{Binding Due}"/>
+        <xctk:WatermarkTextBox Watermark="Nachricht .." HorizontalAlignment="Left" Height="105" Margin="10,132,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="312" Text="{Binding Nachricht}"/>
+        <xctk:WatermarkTextBox Watermark="Kommentar .." HorizontalAlignment="Left" Height="118" Margin="10,242,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="312" Text="{Binding Kommentar}"/>
+        <ListView HorizontalAlignment="Left" Height="200" Margin="10,365,0,0" VerticalAlignment="Top" Width="312" ItemsSource="{Binding Lines}">
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn Header="Stk" Width="30" DisplayMemberBinding="{Binding Stk}"/>
+                    <GridViewColumn Header="Artikel" Width="190" DisplayMemberBinding="{Binding Artikel}"/>
+                    <GridViewColumn Header="Preis" Width="85" DisplayMemberBinding="{Binding Preis}"/>
+                </GridView>
+            </ListView.View>
+        </ListView>
+        <Label Content="{Binding SummeNetto}" HorizontalAlignment="Left" Margin="189,575,0,0" VerticalAlignment="Top"/>
+        <Label Content="+ 20%" HorizontalAlignment="Left" Margin="189,601,0,0" VerticalAlignment="Top"/>
+        <Label Content="{Binding SummeBrutto}" HorizontalAlignment="Left" Margin="189,627,0,0" VerticalAlignment="Top"/>
+    </Grid>
+</Window>

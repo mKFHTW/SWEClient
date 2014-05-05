@@ -19,6 +19,8 @@ namespace SWEClient.ViewModels
     {
         Models.Firma Firma;
         Models.Person Person;
+        Models.SearchReceipt RechnungSearch;
+        Models.Rechnung Rechnung;
 
         #region ObservableCollections
         ObservableCollection<Models.Firma> FirmaCollection;
@@ -40,17 +42,60 @@ namespace SWEClient.ViewModels
                 return PersonCollection;
             }
         }
+
+        ObservableCollection<Models.Rechnung> RechnungCollection;
+
+        public ObservableCollection<Models.Rechnung> Rechnungen
+        {
+            get
+            {
+                return RechnungCollection;
+            }
+        }
         #endregion
 
         public SearchViewModel()
         {
             Firma = new Models.Firma();
             Person = new Models.Person();
+            RechnungSearch = new Models.SearchReceipt();
+            Rechnung = new Models.Rechnung();
             FirmaCollection = new ObservableCollection<Models.Firma>();
             PersonCollection = new ObservableCollection<Models.Person>();
+            RechnungCollection = new ObservableCollection<Models.Rechnung>();
         }
 
         #region PropertyChangedLogic
+        public string BetragVon
+        {
+            get { return RechnungSearch.BetragVon.ToString(); }
+            set { RechnungSearch.BetragVon = Convert.ToInt32(value); RaisePropertyChanged("BetragVon"); }
+        }
+
+        public string BetragBis
+        {
+            get { return RechnungSearch.BetragBis.ToString(); }
+            set { RechnungSearch.BetragBis = Convert.ToInt32(value); RaisePropertyChanged("BetragBis"); }
+        }
+
+        public DateTime DateBis
+        {
+            get { return RechnungSearch.DateBis; }
+            set { RechnungSearch.DateBis = value; RaisePropertyChanged("DateBis"); }
+        }        
+
+        public DateTime DateVon
+        {
+            get { return RechnungSearch.DateVon; }
+            set { RechnungSearch.DateVon = value; RaisePropertyChanged("DateVon"); }
+        }
+
+        public string Rechnungsname
+        {
+            get { return RechnungSearch.Name; }
+            set { RechnungSearch.Name = value; RaisePropertyChanged("Rechnungsname"); }
+        }
+
         public string Name 
         {
             get { return Firma.Name; }
@@ -77,6 +122,7 @@ namespace SWEClient.ViewModels
 
         public Models.Firma SelectedFirma { set { Firma = value; } }
         public Models.Person SelectedPerson { set { Person = value; } }
+        public Models.Rechnung SelectedRechnung { set { Rechnung = value; } }
 
         public event PropertyChangedEventHandler PropertyChanged;
         private void RaisePropertyChanged(string propertyName)
@@ -129,6 +175,9 @@ namespace SWEClient.ViewModels
                 case "AddPerson":
                     lViewDoubleClickPerson();
                     break;
+                case "AddRechnung":
+                    lViewDoubleClickRechnung();
+                    break;
                 default:
                     //DetailedInformationWindow window = new DetailedInformationWindow();
                     //window.Show();
@@ -137,6 +186,12 @@ namespace SWEClient.ViewModels
         }               
 
         #region FunctionsToCall
+        public void lViewDoubleClickRechnung()
+        {
+            AddRechnung window = new AddRechnung(Rechnung);
+            window.Show();
+        }
+
         public void lViewDoubleClickFirma()
         {
             DetailedInformationWindow window = new DetailedInformationWindow(Firma);
@@ -151,15 +206,25 @@ namespace SWEClient.ViewModels
 
         public void SearchFirma()
         {
-            //MessageBox.Show("Firma " + Firma.Name + " " + Firma.UID);
-            XElement xml =
-                new XElement("Do","Search",
-                    new XElement("Type","Firma",
-                        new XElement("Name", Firma.Name),
+            XElement xml;
+            if (string.IsNullOrWhiteSpace(Firma.Name))
+            {
+                xml =
+                new XElement("Do", "Search",
+                    new XElement("Type", "Firma",
                         new XElement("UID", Firma.UID)
                         )
                         );
-
+            }
+            else
+            {
+                xml =
+                    new XElement("Do", "Search",
+                        new XElement("Type", "Firma",
+                            new XElement("Name", Firma.Name)
+                            )
+                            );
+            }
             byte[] data = Encoding.UTF8.GetBytes(xml.ToString());
 
             Proxy.Instance.Send(data);
@@ -169,7 +234,41 @@ namespace SWEClient.ViewModels
 
         public void SearchPerson()
         {
-            MessageBox.Show("Person " + Person.Vorname + " " + Person.Nachname);
+            XElement xml;
+            if (string.IsNullOrWhiteSpace(Person.Vorname))
+            {
+                xml =
+                new XElement("Do", "Search",
+                    new XElement("Type", "Person",
+                        new XElement("Nachname", Person.Nachname)
+                        )
+                        );
+            }
+            else if (string.IsNullOrWhiteSpace(Person.Nachname))
+            {
+                xml =
+                new XElement("Do", "Search",
+                    new XElement("Type", "Person",
+                        new XElement("Vorname", Person.Vorname)
+                        )
+                        );
+            }
+
+            else 
+            {
+                xml =
+                new XElement("Do", "Search",
+                    new XElement("Type", "Person",
+                        new XElement("Nachname", Person.Nachname),
+                        new XElement("Vorname", Person.Vorname)
+                        )
+                        );
+            }
+            byte[] data = Encoding.UTF8.GetBytes(xml.ToString());
+
+            Proxy.Instance.Send(data);
+            Proxy.Instance.Receive();
+            Proceed();
         }
 
         public void SearchRechnung()
@@ -190,7 +289,7 @@ namespace SWEClient.ViewModels
 
                 obj.Name = xn["Name"].InnerText;
                 obj.UID = xn["UID"].InnerText;
-                FirmaCollection.Add(obj);
+                Firmen.Add(obj);
             }
         }
         #endregion

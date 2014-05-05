@@ -80,16 +80,27 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="AddRechnung.xaml.cs">
+      <DependentUpon>AddRechnung.xaml</DependentUpon>
+    </Compile>
     <Compile Include="DetailedInformationWindow.xaml.cs">
       <DependentUpon>DetailedInformationWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Models\InputRechnung.cs" />
     <Compile Include="Models\Kontakt.cs" />
     <Compile Include="Models\Person.cs" />
+    <Compile Include="Models\Rechnung.cs" />
+    <Compile Include="Models\Rechnungszeile.cs" />
     <Compile Include="Models\SearchReceipt.cs" />
     <Compile Include="Proxy.cs" />
     <Compile Include="RelayCommand.cs" />
     <Compile Include="ViewModels\DetailedInformationWindowViewModel.cs" />
+    <Compile Include="ViewModels\RechnungViewModel.cs" />
     <Compile Include="ViewModels\SearchViewModel.cs" />
+    <Page Include="AddRechnung.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="DetailedInformationWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

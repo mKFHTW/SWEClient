@@ -72,23 +72,24 @@
                     </GroupBox>
                     <GroupBox Header="Datum" Height="52" Margin="7,72,10,161">
                         <Grid>
-                            <DatePicker HorizontalAlignment="Left" Height="23" Margin="114,3,0,0" VerticalAlignment="Top"/>
+                            <DatePicker HorizontalAlignment="Left" Height="23" Margin="114,3,0,0" VerticalAlignment="Top" SelectedDate="{Binding DateVon}"/>
                             <Label Content="von" HorizontalAlignment="Left" Margin="66,2,0,0" VerticalAlignment="Top"/>
-                            <DatePicker HorizontalAlignment="Left" Margin="376,3,0,0" VerticalAlignment="Top"/>
+                            <DatePicker HorizontalAlignment="Left" Margin="376,3,0,0" VerticalAlignment="Top" SelectedDate="{Binding DateBis}"/>
                             <Label Content="bis" HorizontalAlignment="Left" Margin="326,2,0,0" VerticalAlignment="Top"/>
                         </Grid>
                     </GroupBox>
                     <xctk:WatermarkTextBox Watermark="Kundenname .." HorizontalAlignment="Left" Height="23" Margin="10,141,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="200" Text="{Binding Rechnungsname}"/>
                     <Button Content="Suche" HorizontalAlignment="Left" Margin="444,141,0,0" VerticalAlignment="Top" Width="75"/>
-                    <ListView HorizontalAlignment="Left" Height="100" Margin="10,175,0,0" VerticalAlignment="Top" Width="595">
+                    <ListView HorizontalAlignment="Left" Height="100" Margin="10,175,0,0" VerticalAlignment="Top" Width="595" ItemsSource="{Binding Rechnungen}" SelectedItem="{Binding SelectedRechnung}">
                         <ListView.View>
                             <GridView>
-                                <GridViewColumn Header="Kundenname" Width="230" DisplayMemberBinding="{Binding Name}"/>
-                                <GridViewColumn Header="Datum" Width="205" DisplayMemberBinding="{Binding Name}"/>
-                                <GridViewColumn Header="Betrag" Width="150" DisplayMemberBinding="{Binding Name}"/>
+                                <GridViewColumn Header="Kundenname" Width="230" DisplayMemberBinding="{Binding Kundenname}"/>
+                                <GridViewColumn Header="Datum" Width="205" DisplayMemberBinding="{Binding Datum}"/>
+                                <GridViewColumn Header="Betrag" Width="150" DisplayMemberBinding="{Binding Betrag}"/>
                             </GridView>
                         </ListView.View>
                     </ListView>
+                    <Button Content="+" HorizontalAlignment="Left" Margin="542,141,0,0" VerticalAlignment="Top" Width="26" Command="{Binding GeneralCommand}" CommandParameter="AddRechnung"/>
                 </Grid>
             </TabItem>
         </TabControl>
