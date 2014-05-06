@@ -41,7 +41,7 @@ namespace SWEClient
             dataStream = request.GetRequestStream();
             dataStream.Write(data, 0, data.Length);
             dataStream.Close();
-            //Receive();
+            Receive();
         }
 
         public void Receive()

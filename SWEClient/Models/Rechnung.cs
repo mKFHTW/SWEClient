@@ -8,10 +8,11 @@ namespace SWEClient.Models
 {
     public class Rechnung
     {
-        public int KundenID { get; set; }
+        public string KundenID { get; set; }
         public string Kundenname { get; set; }
         public string Kommentar { get; set; }
         public string Nachricht { get; set; }
+        public DateTime Date { get; set; }
         public DateTime Due { get; set; }
         public List<Models.Rechnungszeile> Zeilen { get; set; }
 

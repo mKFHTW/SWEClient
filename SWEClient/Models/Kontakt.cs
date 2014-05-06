@@ -8,9 +8,9 @@ namespace SWEClient.Models
 {
     public abstract class Kontakt
     {
-        public int ID { get; set; }     
+        public string ID { get; set; }     
         public string Adresse { get; set; }
-        public int PLZ { get; set; }
+        public string PLZ { get; set; }
         public string Ort { get; set; }
     }
 }

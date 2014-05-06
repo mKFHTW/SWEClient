@@ -79,11 +79,11 @@ namespace SWEClient.ViewModels
             set { Input.Preis = Convert.ToInt32(value); RaisePropertyChanged("Preis"); }
         }
 
-        public int SummeNetto
+        public double SummeNetto
         {
             get
             {
-                int Summe = 0;
+                double Summe = 0;
                 foreach (Models.Rechnungszeile item in Lines)
                 {
                     Summe += item.Stk * item.Preis;

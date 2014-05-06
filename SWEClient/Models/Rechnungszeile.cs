@@ -10,6 +10,6 @@ namespace SWEClient.Models
     {
         public int Stk { get; set; }
         public string Artikel { get; set; }
-        public int Preis { get; set; }
+        public double Preis { get; set; }
     }
 }

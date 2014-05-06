@@ -21,6 +21,7 @@ namespace SWEClient.ViewModels
         Models.Person Person;
         Models.SearchReceipt RechnungSearch;
         Models.Rechnung Rechnung;
+        byte[] data;
 
         #region ObservableCollections
         ObservableCollection<Models.Firma> FirmaCollection;
@@ -156,12 +157,18 @@ namespace SWEClient.ViewModels
             {
                 case "Firma":
                     SearchFirma();
+                    Proxy.Instance.Send(data);
+                    Proxy.Instance.Receive();
                     break;
                 case "Person":
                     SearchPerson();
+                    Proxy.Instance.Send(data);
+                    Proxy.Instance.Receive();
                     break;
                 case "Rechnung":
                     SearchRechnung();
+                    Proxy.Instance.Send(data);
+                    Proxy.Instance.Receive();
                     break;
                 case "ViewFirma":
                     lViewDoubleClickFirma();
@@ -182,7 +189,7 @@ namespace SWEClient.ViewModels
                     //DetailedInformationWindow window = new DetailedInformationWindow();
                     //window.Show();
                     break;
-            }
+            }            
         }               
 
         #region FunctionsToCall
@@ -210,8 +217,8 @@ namespace SWEClient.ViewModels
             if (string.IsNullOrWhiteSpace(Firma.Name))
             {
                 xml =
-                new XElement("Do", "Search",
-                    new XElement("Type", "Firma",
+                new XElement("Search",
+                    new XElement("Firma",
                         new XElement("UID", Firma.UID)
                         )
                         );
@@ -219,17 +226,16 @@ namespace SWEClient.ViewModels
             else
             {
                 xml =
-                    new XElement("Do", "Search",
-                        new XElement("Type", "Firma",
+                    new XElement("Search",
+                        new XElement("Firma",
                             new XElement("Name", Firma.Name)
                             )
                             );
             }
-            byte[] data = Encoding.UTF8.GetBytes(xml.ToString());
 
-            Proxy.Instance.Send(data);
-            Proxy.Instance.Receive();
-            Proceed();
+            data = Encoding.UTF8.GetBytes(xml.ToString());
+            
+            //Proceed();
         }
 
         public void SearchPerson()
@@ -238,8 +244,8 @@ namespace SWEClient.ViewModels
             if (string.IsNullOrWhiteSpace(Person.Vorname))
             {
                 xml =
-                new XElement("Do", "Search",
-                    new XElement("Type", "Person",
+                new XElement("Search", 
+                    new XElement("Person", 
                         new XElement("Nachname", Person.Nachname)
                         )
                         );
@@ -247,8 +253,8 @@ namespace SWEClient.ViewModels
             else if (string.IsNullOrWhiteSpace(Person.Nachname))
             {
                 xml =
-                new XElement("Do", "Search",
-                    new XElement("Type", "Person",
+                new XElement("Search",
+                    new XElement("Person",
                         new XElement("Vorname", Person.Vorname)
                         )
                         );
@@ -257,42 +263,170 @@ namespace SWEClient.ViewModels
             else 
             {
                 xml =
-                new XElement("Do", "Search",
-                    new XElement("Type", "Person",
-                        new XElement("Nachname", Person.Nachname),
-                        new XElement("Vorname", Person.Vorname)
+                new XElement("Search",
+                    new XElement("Person",
+                        new XElement("Vorname", Person.Vorname),
+                        new XElement("Nachname", Person.Nachname)                        
                         )
                         );
             }
-            byte[] data = Encoding.UTF8.GetBytes(xml.ToString());
 
-            Proxy.Instance.Send(data);
-            Proxy.Instance.Receive();
-            Proceed();
+            data = Encoding.UTF8.GetBytes(xml.ToString());
+
+            //MessageBox.Show(xml.ToString());            
+            //Proceed();
         }
 
         public void SearchRechnung()
         {
-            MessageBox.Show("Rechnung");
+            XElement xml = null;
+            if (!string.IsNullOrWhiteSpace(RechnungSearch.Name))
+            {
+                xml =
+                new XElement("Search",
+                    new XElement("Rechnung",
+                        new XElement("Name", RechnungSearch.Name)
+                        )
+                        );
+            }
+
+            else if(RechnungSearch.BetragVon != 0 && RechnungSearch.BetragBis != 0)
+            {
+                xml =
+                new XElement("Search",
+                    new XElement("Rechnung",
+                        new XElement("BetragVon", RechnungSearch.BetragVon),
+                        new XElement("BetragBis", RechnungSearch.BetragBis)
+                        )
+                        );
+            }
+
+            else if (RechnungSearch.DateVon != null && RechnungSearch.DateBis != null)
+            {
+                xml =
+                new XElement("Search",
+                    new XElement("Rechnung",
+                        new XElement("DateVon", RechnungSearch.DateVon),
+                        new XElement("DateBis", RechnungSearch.DateBis)
+                        )
+                        );
+            }
+
+            data = Encoding.UTF8.GetBytes(xml.ToString());
         }
 
+        #region Unpack Response
         public void Proceed()
         {
             XmlDocument xml = new XmlDocument();            
             xml.LoadXml(Proxy.Instance.Response);
-            
-            XmlNodeList xnList = xml.SelectNodes("/Type");
 
-            foreach (XmlNode xn in xnList)
+            XmlElement root = xml.DocumentElement;
+
+            switch (root.Name)
             {
-                Models.Firma obj = new Models.Firma();
-
-                obj.Name = xn["Name"].InnerText;
-                obj.UID = xn["UID"].InnerText;
-                Firmen.Add(obj);
+                case "Personen":
+                    UnpackPersonen(root);
+                    break;
+                case "Firmen":
+                    UnpackFirmen(root);
+                    break;
+                case "Rechnungen":
+                    UnpackRechnungen(root);
+                    break;
+                default:
+                    break;
             }
         }
+
+        public void UnpackPersonen(XmlElement root)
+        {
+            foreach (XmlNode element in root.ChildNodes)
+            {
+                Models.Person person = new Models.Person();
+
+                foreach (XmlNode item in element.ChildNodes)
+                {
+                    if (item.Name == "ID")
+                    {
+                        person.ID = item.Value;
+                    }
+                    if (item.Name == "Vorname")
+                    {
+                        person.Vorname = item.Value;
+                    }
+                    if (item.Name == "Nachname")
+                    {
+                        person.Nachname = item.Value;
+                    }
+                    if (item.Name == "Suffix")
+                    {
+                        person.Suffix = item.Value;
+                    }
+                    if (item.Name == "Titel")
+                    {
+                        person.Titel = item.Value;
+                    }
+                    if (item.Name == "Adresse")
+                    {
+                        person.Adresse = item.Value;
+                    }
+                    if (item.Name == "Ort")
+                    {
+                        person.Ort = item.Value;
+                    }
+                    if (item.Name == "PLZ")
+                    {
+                        person.PLZ = item.Value;
+                    }                    
+                }
+                Personen.Add(person);
+            }
+        }
+
+        public void UnpackFirmen(XmlElement root)
+        {
+            foreach (XmlNode element in root.ChildNodes)
+            {
+                Models.Firma firma = new Models.Firma();
+
+                foreach (XmlNode item in element.ChildNodes)
+                {
+                    if (item.Name == "ID")
+                    {
+                        firma.ID = item.Value;
+                    }
+                    if (item.Name == "Name")
+                    {
+                        firma.Name = item.Value;
+                    }
+                    if (item.Name == "UID")
+                    {
+                        firma.UID = item.Value;
+                    }
+                    if (item.Name == "Adresse")
+                    {
+                        firma.Adresse = item.Value;
+                    }
+                    if (item.Name == "Ort")
+                    {
+                        firma.Ort = item.Value;
+                    }
+                    if (item.Name == "PLZ")
+                    {
+                        firma.PLZ = item.Value;
+                    }
+                }
+                Firmen.Add(firma);
+            }
+        }
+
+        public void UnpackRechnungen(XmlElement root)
+        { 
+            
+        }
         #endregion
-        #endregion             
+        #endregion
+        #endregion
     }
 }
