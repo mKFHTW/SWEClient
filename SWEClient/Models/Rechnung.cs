@@ -8,6 +8,7 @@ namespace SWEClient.Models
 {
     public class Rechnung
     {
+        public string ID { get; set; }
         public string KundenID { get; set; }
         public string Kundenname { get; set; }
         public string Kommentar { get; set; }

@@ -26,7 +26,7 @@
                 <Label Content="Titel" HorizontalAlignment="Left" Margin="11,7,0,0" VerticalAlignment="Top"/>
                 <xctk:WatermarkTextBox Watermark="Titel eingeben" HorizontalAlignment="Left" Height="23" Margin="113,9,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="129" Text="{Binding Titel}"/>
                 <Label Content="Suffix" HorizontalAlignment="Left" Margin="304,7,0,0" VerticalAlignment="Top"/>
-                <ComboBox HorizontalAlignment="Left" Margin="361,10,0,0" VerticalAlignment="Top" Width="120" SelectedItem="{Binding Suffix}">
+                <ComboBox HorizontalAlignment="Left" Margin="361,10,0,0" VerticalAlignment="Top" Width="120" SelectedItem="{Binding Suffix}" Text="{Binding Suffix}">
                     <ComboBoxItem Content="Herr"></ComboBoxItem>
                     <ComboBoxItem Content="Frau"></ComboBoxItem>
                 </ComboBox>

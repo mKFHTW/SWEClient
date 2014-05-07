@@ -159,16 +159,19 @@ namespace SWEClient.ViewModels
                     SearchFirma();
                     Proxy.Instance.Send(data);
                     Proxy.Instance.Receive();
+                    Proceed();
                     break;
                 case "Person":
                     SearchPerson();
                     Proxy.Instance.Send(data);
                     Proxy.Instance.Receive();
+                    Proceed();
                     break;
                 case "Rechnung":
                     SearchRechnung();
                     Proxy.Instance.Send(data);
                     Proxy.Instance.Receive();
+                    Proceed();
                     break;
                 case "ViewFirma":
                     lViewDoubleClickFirma();
@@ -349,35 +352,35 @@ namespace SWEClient.ViewModels
                 {
                     if (item.Name == "ID")
                     {
-                        person.ID = item.Value;
+                        person.ID = item.InnerText;
                     }
                     if (item.Name == "Vorname")
                     {
-                        person.Vorname = item.Value;
+                        person.Vorname = item.InnerText;
                     }
                     if (item.Name == "Nachname")
                     {
-                        person.Nachname = item.Value;
+                        person.Nachname = item.InnerText;
                     }
                     if (item.Name == "Suffix")
                     {
-                        person.Suffix = item.Value;
+                        person.Suffix = item.InnerText;
                     }
                     if (item.Name == "Titel")
                     {
-                        person.Titel = item.Value;
+                        person.Titel = item.InnerText;
                     }
                     if (item.Name == "Adresse")
                     {
-                        person.Adresse = item.Value;
+                        person.Adresse = item.InnerText;
                     }
                     if (item.Name == "Ort")
                     {
-                        person.Ort = item.Value;
+                        person.Ort = item.InnerText;
                     }
                     if (item.Name == "PLZ")
                     {
-                        person.PLZ = item.Value;
+                        person.PLZ = item.InnerText;
                     }                    
                 }
                 Personen.Add(person);
@@ -394,36 +397,93 @@ namespace SWEClient.ViewModels
                 {
                     if (item.Name == "ID")
                     {
-                        firma.ID = item.Value;
+                        firma.ID = item.InnerText;
                     }
                     if (item.Name == "Name")
                     {
-                        firma.Name = item.Value;
+                        firma.Name = item.InnerText;
                     }
                     if (item.Name == "UID")
                     {
-                        firma.UID = item.Value;
+                        firma.UID = item.InnerText;
                     }
                     if (item.Name == "Adresse")
                     {
-                        firma.Adresse = item.Value;
+                        firma.Adresse = item.InnerText;
                     }
                     if (item.Name == "Ort")
                     {
-                        firma.Ort = item.Value;
+                        firma.Ort = item.InnerText;
                     }
                     if (item.Name == "PLZ")
                     {
-                        firma.PLZ = item.Value;
-                    }
+                        firma.PLZ = item.InnerText;
+                    }                    
                 }
                 Firmen.Add(firma);
             }
         }
 
         public void UnpackRechnungen(XmlElement root)
-        { 
-            
+        {
+            foreach (XmlNode element in root.ChildNodes)
+            {
+                Models.Rechnung rechnung = new Models.Rechnung();
+
+                foreach (XmlNode item in element.ChildNodes)
+                {
+                    if (item.Name == "ID")
+                    {
+                        rechnung.ID = item.InnerText;
+                    }
+                    if (item.Name == "KundenID")
+                    {
+                        rechnung.KundenID = item.InnerText;
+                    }
+                    if (item.Name == "Kundenname")
+                    {
+                        rechnung.Kundenname = item.InnerText;
+                    }
+                    if (item.Name == "Kommentar")
+                    {
+                        rechnung.Kommentar = item.InnerText;
+                    }
+                    if (item.Name == "Nachricht")
+                    {
+                        rechnung.Nachricht = item.InnerText;
+                    }
+                    if (item.Name == "Date")
+                    {
+                        rechnung.Date = Convert.ToDateTime(item.InnerText);
+                    }
+                    if (item.Name == "Due")
+                    {
+                        rechnung.Due = Convert.ToDateTime(item.InnerText);
+                    }
+                    if (item.Name == "Zeile")
+                    {
+                        Models.Rechnungszeile zeile = new Models.Rechnungszeile();
+
+                        foreach (XmlNode line in item.ChildNodes)
+                        {
+                            if (line.Name == "Stk")
+                            {
+                                zeile.Stk = Convert.ToInt32(line.InnerText);
+                            }
+                            if (line.Name == "Artikel")
+                            {
+                                zeile.Artikel = line.InnerText;
+                            }
+                            if (line.Name == "Preis")
+                            {
+                                zeile.Preis = Convert.ToDouble(line.InnerText);
+                            }                            
+                        }
+                        rechnung.Zeilen.Add(zeile);
+                    }                    
+                }    
+                Rechnungen.Add(rechnung);
+            }
         }
         #endregion
         #endregion

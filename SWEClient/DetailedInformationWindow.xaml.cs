@@ -27,6 +27,14 @@ namespace SWEClient
 
             viewModel = new ViewModels.DetailedInformationWindowViewModel(param);
             base.DataContext = viewModel;
-        }             
+        }
+
+        public DetailedInformationWindow()
+        {
+            InitializeComponent();
+
+            viewModel = new ViewModels.DetailedInformationWindowViewModel();
+            base.DataContext = viewModel;
+        }   
     }
 }
