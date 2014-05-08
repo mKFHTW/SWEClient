@@ -6,6 +6,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
+using System.Xml;
+using System.Xml.Linq;
 
 namespace SWEClient.ViewModels
 {
@@ -14,6 +16,8 @@ namespace SWEClient.ViewModels
         Models.Firma Firma;
         Models.Person Person;
         bool isPerson = false;
+        List<Models.Firma> Firmen;
+        int amountFirmen;
 
         public DetailedInformationWindowViewModel()
         {
@@ -23,8 +27,13 @@ namespace SWEClient.ViewModels
 
         public DetailedInformationWindowViewModel(Models.Kontakt param)
         {
+            Firmen = new List<Models.Firma>();
+            GetFirmen();
+            amountFirmen = 0;
+
             Firma = new Models.Firma();
             Person = new Models.Person();
+            
 
             if (param is Models.Firma)
             {
@@ -117,6 +126,18 @@ namespace SWEClient.ViewModels
             set { Person.Nachname = value; RaisePropertyChanged("Nachname"); NotifyStateChanged(); }
         }
 
+        public DateTime GebDatum
+        {
+            get { return Person.GebDatum; }
+            set { Person.GebDatum = value; RaisePropertyChanged("GebDatum"); NotifyStateChanged(); }
+        }
+
+        public string Firm
+        {
+            get { return Person.Firm; }
+            set { Person.Firm = value; RaisePropertyChanged("Firm"); NotifyStateChanged(); }
+        }
+
         public string Adresse
         {
             get 
@@ -176,6 +197,126 @@ namespace SWEClient.ViewModels
                 RaisePropertyChanged("PLZ"); NotifyStateChanged();
             }
         }
+
+        public string RechnungsAdresse
+        {
+            get
+            {
+                if (isPerson)
+                    return Person.RechnungsAdresse;
+                else
+                    return Firma.RechnungsAdresse;
+            }
+            set
+            {
+                if (isPerson)
+                    Person.RechnungsAdresse = value;
+                else
+                    Firma.RechnungsAdresse = value;
+
+                RaisePropertyChanged("RechnungsAdresse"); NotifyStateChanged();
+            }
+        }
+
+        public string RechnungsOrt
+        {
+            get
+            {
+                if (isPerson)
+                    return Person.RechnungsOrt;
+                else
+                    return Firma.RechnungsOrt;
+            }
+            set
+            {
+                if (isPerson)
+                    Person.RechnungsOrt = value;
+                else
+                    Firma.RechnungsOrt = value;
+
+                RaisePropertyChanged("RechnungsOrt"); NotifyStateChanged();
+            }
+        }
+
+        public string RechnungsPLZ
+        {
+            get
+            {
+                if (isPerson)
+                    return Person.RechnungsPLZ;
+                else
+                    return Firma.RechnungsPLZ;
+            }
+            set
+            {
+                if (isPerson)
+                    Person.RechnungsPLZ = value;
+                else
+                    Firma.RechnungsPLZ = value;
+
+                RaisePropertyChanged("RechnungsPLZ"); NotifyStateChanged();
+            }
+        }
+
+        public string LieferAdresse
+        {
+            get
+            {
+                if (isPerson)
+                    return Person.LieferAdresse;
+                else
+                    return Firma.LieferAdresse;
+            }
+            set
+            {
+                if (isPerson)
+                    Person.LieferAdresse = value;
+                else
+                    Firma.LieferAdresse = value;
+
+                RaisePropertyChanged("LieferAdresse"); NotifyStateChanged();
+            }
+        }
+
+        public string LieferOrt
+        {
+            get
+            {
+                if (isPerson)
+                    return Person.LieferOrt;
+                else
+                    return Firma.LieferOrt;
+            }
+            set
+            {
+                if (isPerson)
+                    Person.LieferOrt = value;
+                else
+                    Firma.LieferOrt = value;
+
+                RaisePropertyChanged("LieferOrt"); NotifyStateChanged();
+            }
+        }
+
+        public string LieferPLZ
+        {
+            get
+            {
+                if (isPerson)
+                    return Person.LieferPLZ;
+                else
+                    return Firma.LieferPLZ;
+            }
+            set
+            {
+                if (isPerson)
+                    Person.LieferPLZ = value;
+                else
+                    Firma.LieferPLZ = value;
+
+                RaisePropertyChanged("LieferPLZ"); NotifyStateChanged();
+            }
+        }
         #endregion
 
         #region ButtonICommandImplementation
@@ -196,9 +337,122 @@ namespace SWEClient.ViewModels
         {
             switch (param as string)
             {
-                
+                case "ConnectFirma":
+                    if (ConnectToFirma())
+                    {
+
+                    }
+                    else
+                    {
+                        Proxy.Instance.FirmenList = Firmen;
+                        Proxy.Instance.Closed = false;
+                        
+                        SelectFirma window = new SelectFirma();
+
+                        if (window.ShowDialog() == true)
+                        {
+                            
+                        }                        
+                        Firm = Proxy.Instance.Selected.Name;
+                    }
+                    break;
+
+                case "Update":
+                    UpdateTarget();
+                    break;
+                default:
+                    break;
+            }
+        }        
+        #endregion
+
+        private void UpdateTarget()
+        {
+            XElement xml = null;
+            switch (isPerson)
+            {
+
+                case true:
+                    xml =
+                new XElement("Update",
+                    new XElement("Person",
+                        new XElement("ID", Person.ID),
+                        new XElement("Vorname", Person.Vorname),
+                        new XElement("Nachname", Person.Nachname),
+                        new XElement("Titel", Person.Titel),
+                        new XElement("Suffix", Person.Suffix),
+                        new XElement("GebDatum", Person.GebDatum),
+                        new XElement("FirmaID", Person.FirmaID)
+                        )
+                        );
+                    break;
+
+                case false:
+                    xml =
+                new XElement("Update",
+                    new XElement("Firma",
+                        new XElement("ID", Firma.ID),
+                        new XElement("Firmenname", Firma.Name),
+                        new XElement("UID", Firma.UID)
+                        )
+                        );
+                    break;
+                default:
+                    break;               
+            }
+            byte[] data = Encoding.UTF8.GetBytes(xml.ToString());
+            Proxy.Instance.Send(data);
+        }
+
+        public bool ConnectToFirma()
+        {
+            foreach (Models.Firma item in Firmen)
+            {
+                if (item.Name == Firm)
+                    amountFirmen++;
+                if (amountFirmen == 2)
+                {
+                    return false;
+                }
+            }
+            if (amountFirmen == 1)
+                return true;
+            else
+                return false;
+        }
+
+        public void GetFirmen()
+        {
+            XElement xml;            
+                xml =
+                new XElement("Search",
+                    new XElement("Firmen")                        
+                        );
+            byte[] data = Encoding.UTF8.GetBytes(xml.ToString());
+            Proxy.Instance.Send(data);
+            Proxy.Instance.Receive();
+
+            XmlDocument response = new XmlDocument();
+            response.LoadXml(Proxy.Instance.Response);
+
+            XmlElement root = response.DocumentElement;
+            foreach (XmlNode element in root.ChildNodes)
+            {
+                Models.Firma firma = new Models.Firma();
+
+                foreach (XmlNode item in element.ChildNodes)
+                {
+                    if (item.Name == "ID")
+                    {
+                        firma.ID = item.InnerText;
+                    }
+                    if (item.Name == "Name")
+                    {
+                        firma.Name = item.InnerText;
+                    }
+                }
+                Firmen.Add(firma);
             }
         }
-        #endregion
     }
 }

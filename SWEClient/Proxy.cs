@@ -15,13 +15,17 @@ namespace SWEClient
         private WebRequest request;
         private Stream dataStream;
 
+        public Models.Firma Selected { get; set; }
+        List<Models.Firma> Firmen;
+
+        public List<Models.Firma> FirmenList { get { return Firmen; } set { Firmen = value; } }
+        public bool Closed { get; set; }
+
         public string Response { get; set; }
 
         private Proxy()
         {
-            request = WebRequest.Create("http://localhost:8080");
-            request.Method = "POST";
-            request.ContentType = "text/xml";
+            Firmen = new List<Models.Firma>();
         }
 
         public static Proxy Instance
@@ -37,6 +41,9 @@ namespace SWEClient
 
         public void Send(byte[] data)
         {
+            request = WebRequest.Create("http://localhost:8080");
+            request.Method = "POST";
+            request.ContentType = "text/xml";
             request.ContentLength = data.Length;
             dataStream = request.GetRequestStream();
             dataStream.Write(data, 0, data.Length);
@@ -54,6 +61,7 @@ namespace SWEClient
             reader.Close();
             dataStream.Close();
             response.Close();
+            
         }
     }
 }

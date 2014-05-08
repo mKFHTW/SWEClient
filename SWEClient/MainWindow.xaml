@@ -79,13 +79,18 @@
                         </Grid>
                     </GroupBox>
                     <xctk:WatermarkTextBox Watermark="Kundenname .." HorizontalAlignment="Left" Height="23" Margin="10,141,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="200" Text="{Binding Rechnungsname}"/>
-                    <Button Content="Suche" HorizontalAlignment="Left" Margin="444,141,0,0" VerticalAlignment="Top" Width="75"/>
+                    <Button Content="Suche" HorizontalAlignment="Left" Margin="444,141,0,0" VerticalAlignment="Top" Width="75" Command="{Binding GeneralCommand}" CommandParameter="SearchRechnungen"/>
                     <ListView HorizontalAlignment="Left" Height="100" Margin="10,175,0,0" VerticalAlignment="Top" Width="595" ItemsSource="{Binding Rechnungen}" SelectedItem="{Binding SelectedRechnung}">
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="MouseDoubleClick">
+                                <i:InvokeCommandAction Command="{Binding GeneralCommand}" CommandParameter="ViewRechnung"/>
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
                         <ListView.View>
                             <GridView>
                                 <GridViewColumn Header="Kundenname" Width="230" DisplayMemberBinding="{Binding Kundenname}"/>
                                 <GridViewColumn Header="Datum" Width="205" DisplayMemberBinding="{Binding Datum}"/>
-                                <GridViewColumn Header="Betrag" Width="150" DisplayMemberBinding="{Binding Betrag}"/>
+                                <GridViewColumn Header="Fälligkeit" Width="150" DisplayMemberBinding="{Binding Due}"/>
                             </GridView>
                         </ListView.View>
                     </ListView>

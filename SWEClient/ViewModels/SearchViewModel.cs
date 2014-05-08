@@ -121,6 +121,20 @@ namespace SWEClient.ViewModels
             set { Person.Nachname = value; RaisePropertyChanged("Nachname"); }
         }
 
+        public string Datum
+        {
+            get { return Rechnung.Datum.ToShortDateString(); }
+            set { Rechnung.Datum = Convert.ToDateTime(value); RaisePropertyChanged("Datum"); }
+        }
+
+        public string Due
+        {
+            get { return Rechnung.Due.ToShortDateString(); }
+            set { Rechnung.Due = Convert.ToDateTime(value); RaisePropertyChanged("Due"); }
+        }
+
+
+
         public Models.Firma SelectedFirma { set { Firma = value; } }
         public Models.Person SelectedPerson { set { Person = value; } }
         public Models.Rechnung SelectedRechnung { set { Rechnung = value; } }
@@ -156,18 +170,21 @@ namespace SWEClient.ViewModels
             switch (param as string)
             {
                 case "Firma":
+                    Firmen.Clear();
                     SearchFirma();
                     Proxy.Instance.Send(data);
                     Proxy.Instance.Receive();
                     Proceed();
                     break;
                 case "Person":
+                    Personen.Clear();
                     SearchPerson();
                     Proxy.Instance.Send(data);
                     Proxy.Instance.Receive();
                     Proceed();
                     break;
                 case "Rechnung":
+                    Rechnungen.Clear();
                     SearchRechnung();
                     Proxy.Instance.Send(data);
                     Proxy.Instance.Receive();
@@ -187,6 +204,12 @@ namespace SWEClient.ViewModels
                     break;
                 case "AddRechnung":
                     lViewDoubleClickRechnung();
+                    break;
+                case "SearchRechnungen":
+                    SearchRechnung();
+                    Proxy.Instance.Send(data);
+                    Proxy.Instance.Receive();
+                    Proceed();
                     break;
                 default:
                     //DetailedInformationWindow window = new DetailedInformationWindow();
@@ -236,9 +259,8 @@ namespace SWEClient.ViewModels
                             );
             }
 
-            data = Encoding.UTF8.GetBytes(xml.ToString());
+            data = Encoding.UTF8.GetBytes(xml.ToString());           
             
-            //Proceed();
         }
 
         public void SearchPerson()
@@ -275,9 +297,6 @@ namespace SWEClient.ViewModels
             }
 
             data = Encoding.UTF8.GetBytes(xml.ToString());
-
-            //MessageBox.Show(xml.ToString());            
-            //Proceed();
         }
 
         public void SearchRechnung()
@@ -381,7 +400,43 @@ namespace SWEClient.ViewModels
                     if (item.Name == "PLZ")
                     {
                         person.PLZ = item.InnerText;
-                    }                    
+                    }
+                    if (item.Name == "RechnungsAdresse")
+                    {
+                        person.RechnungsAdresse = item.InnerText;
+                    }
+                    if (item.Name == "RechnungsOrt")
+                    {
+                        person.RechnungsOrt = item.InnerText;
+                    }
+                    if (item.Name == "RechnungsPLZ")
+                    {
+                        person.RechnungsPLZ = item.InnerText;
+                    }
+                    if (item.Name == "LieferAdresse")
+                    {
+                        person.LieferAdresse = item.InnerText;
+                    }
+                    if (item.Name == "LieferOrt")
+                    {
+                        person.LieferOrt = item.InnerText;
+                    }
+                    if (item.Name == "LieferPLZ")
+                    {
+                        person.LieferPLZ = item.InnerText;
+                    }
+                    if (item.Name == "Firma")
+                    {
+                        person.Firm = item.InnerText;
+                    }
+                    if (item.Name == "FirmaID")
+                    {
+                        person.FirmaID = item.InnerText;
+                    }
+                    if (item.Name == "Geburtsdatum")
+                    {
+                        person.GebDatum = Convert.ToDateTime(item.InnerText);
+                    }   
                 }
                 Personen.Add(person);
             }
@@ -418,7 +473,31 @@ namespace SWEClient.ViewModels
                     if (item.Name == "PLZ")
                     {
                         firma.PLZ = item.InnerText;
-                    }                    
+                    }
+                    if (item.Name == "RechnungsAdresse")
+                    {
+                        firma.RechnungsAdresse = item.InnerText;
+                    }
+                    if (item.Name == "RechnungsOrt")
+                    {
+                        firma.RechnungsOrt = item.InnerText;
+                    }
+                    if (item.Name == "RechnungsPLZ")
+                    {
+                        firma.RechnungsPLZ = item.InnerText;
+                    }
+                    if (item.Name == "LieferAdresse")
+                    {
+                        firma.LieferAdresse = item.InnerText;
+                    }
+                    if (item.Name == "LieferOrt")
+                    {
+                        firma.LieferOrt = item.InnerText;
+                    }
+                    if (item.Name == "LieferPLZ")
+                    {
+                        firma.LieferPLZ = item.InnerText;
+                    }
                 }
                 Firmen.Add(firma);
             }
@@ -454,7 +533,7 @@ namespace SWEClient.ViewModels
                     }
                     if (item.Name == "Date")
                     {
-                        rechnung.Date = Convert.ToDateTime(item.InnerText);
+                        rechnung.Datum = Convert.ToDateTime(item.InnerText);
                     }
                     if (item.Name == "Due")
                     {

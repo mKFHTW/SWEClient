@@ -13,7 +13,7 @@ namespace SWEClient.Models
         public string Kundenname { get; set; }
         public string Kommentar { get; set; }
         public string Nachricht { get; set; }
-        public DateTime Date { get; set; }
+        public DateTime Datum { get; set; }
         public DateTime Due { get; set; }
         public List<Models.Rechnungszeile> Zeilen { get; set; }
 
