@@ -10,7 +10,7 @@ namespace SWEClient
     {
         [TestMethod]
         public void TestMethod1()
-        {            
+        {           
             
         }
     }

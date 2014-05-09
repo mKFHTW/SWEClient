@@ -369,6 +369,35 @@ namespace SWEClient.ViewModels
         private void UpdateTarget()
         {
             XElement xml = null;
+
+            if(isPerson && string.IsNullOrWhiteSpace(Person.ID))
+            {
+                xml =
+                new XElement("Insert",
+                    new XElement("Person",
+                        new XElement("ID", Person.ID),
+                        new XElement("Vorname", Person.Vorname),
+                        new XElement("Nachname", Person.Nachname),
+                        new XElement("Titel", Person.Titel),
+                        new XElement("Suffix", Person.Suffix),
+                        new XElement("GebDatum", Person.GebDatum),
+                        new XElement("FirmaID", Person.FirmaID)
+                        )
+                        );
+            }
+
+            else if(!isPerson && string.IsNullOrWhiteSpace(Firma.ID))
+            {
+                xml =
+                new XElement("Insert",
+                    new XElement("Firma",
+                        new XElement("ID", Firma.ID),
+                        new XElement("Firmenname", Firma.Name),
+                        new XElement("UID", Firma.UID)
+                        )
+                        );                
+            }
+            else {             
             switch (isPerson)
             {
 
@@ -399,6 +428,7 @@ namespace SWEClient.ViewModels
                     break;
                 default:
                     break;               
+            }
             }
             byte[] data = Encoding.UTF8.GetBytes(xml.ToString());
             Proxy.Instance.Send(data);
