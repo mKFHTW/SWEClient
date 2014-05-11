@@ -140,7 +140,7 @@ namespace SWEClient.ViewModels
 
         private void Print()
         {
-            throw new NotImplementedException();
+            PdfCreator.Write(Rechnung);
         }
 
         public void Add()
