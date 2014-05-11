@@ -20,17 +20,18 @@
                 <xctk:WatermarkTextBox Watermark="Vorname eingeben .." HorizontalAlignment="Left" Height="23" Margin="113,40,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="368" Text="{Binding Vorname, UpdateSourceTrigger=PropertyChanged}"/>
                 <xctk:WatermarkTextBox Watermark="Nachname eingeben .." HorizontalAlignment="Left" Height="23" Margin="113,71,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="368" Text="{Binding Nachname, UpdateSourceTrigger=PropertyChanged}"/>
                 <Label Content="Firma" HorizontalAlignment="Left" Margin="10,100,0,0" VerticalAlignment="Top"/>
-                <xctk:WatermarkTextBox Watermark="Firmenverknüpfung eingeben" HorizontalAlignment="Left" Height="23" Margin="113,102,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="294" Text="{Binding Firm}"/>
+                <xctk:WatermarkTextBox Watermark="Firmenverknüpfung eingeben" HorizontalAlignment="Left" Height="23" Margin="113,102,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="230" Text="{Binding Firm}"/>
                 <Label Content="Geburtsdatum" HorizontalAlignment="Left" Margin="11,131,0,0" VerticalAlignment="Top"/>
                 <DatePicker HorizontalAlignment="Left" Margin="113,132,0,0" VerticalAlignment="Top" SelectedDate="{Binding GebDatum}"/>
                 <Label Content="Titel" HorizontalAlignment="Left" Margin="11,7,0,0" VerticalAlignment="Top"/>
                 <xctk:WatermarkTextBox Watermark="Titel eingeben" HorizontalAlignment="Left" Height="23" Margin="113,9,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="129" Text="{Binding Titel}"/>
                 <Label Content="Suffix" HorizontalAlignment="Left" Margin="304,7,0,0" VerticalAlignment="Top"/>
-                <ComboBox HorizontalAlignment="Left" Margin="361,10,0,0" VerticalAlignment="Top" Width="120" SelectedItem="{Binding Suffix}" Text="{Binding Suffix}">
+                <ComboBox HorizontalAlignment="Left" Margin="361,10,0,0" VerticalAlignment="Top" Width="120" Text="{Binding Suffix}" SelectedValue="Suffix">
                     <ComboBoxItem Content="Herr"></ComboBoxItem>
                     <ComboBoxItem Content="Frau"></ComboBoxItem>
                 </ComboBox>
                 <Button Content="Connect" HorizontalAlignment="Left" Margin="426,105,0,0" VerticalAlignment="Top" Width="55" Command="{Binding GeneralCommand}" CommandParameter="ConnectFirma"/>
+                <Button Content="-" HorizontalAlignment="Left" Margin="384,105,0,0" VerticalAlignment="Top" Width="28" Command="{Binding GeneralCommand}" CommandParameter="RemoveFirmaConnect"/>
             </Grid>
         </GroupBox>
         <GroupBox Header="Adresse" HorizontalAlignment="Left" Margin="10,320,0,0" VerticalAlignment="Top" Height="105" Width="503">

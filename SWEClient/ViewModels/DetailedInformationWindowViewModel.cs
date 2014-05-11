@@ -354,11 +354,15 @@ namespace SWEClient.ViewModels
                             
                         }                        
                         Firm = Proxy.Instance.Selected.Name;
+                        Person.FirmaID = Proxy.Instance.Selected.ID;
                     }
                     break;
 
                 case "Update":
-                    UpdateTarget();
+                    UpdateInsertTarget();
+                    break;
+                case "RemoveFirmaConnect":
+                    RemoveFirmaConnect();
                     break;
                 default:
                     break;
@@ -366,7 +370,31 @@ namespace SWEClient.ViewModels
         }        
         #endregion
 
-        private void UpdateTarget()
+        public void RemoveFirmaConnect()
+        {
+            if(string.IsNullOrWhiteSpace(Person.ID))
+            {
+                Person.FirmaID = "";
+                Person.Firm = "";
+            }
+            else
+            {
+                XElement xml = null;
+                xml =
+                new XElement("Update",
+                    new XElement("PersonFirma",
+                        new XElement("ID", Person.ID)              
+                        )
+                        );
+                byte[] data = Encoding.UTF8.GetBytes(xml.ToString());
+                Proxy.Instance.Send(data);
+                Person.FirmaID = "";
+                Person.Firm = "";
+                RaisePropertyChanged("Firm"); NotifyStateChanged();
+            }
+        }
+
+        private void UpdateInsertTarget()
         {
             XElement xml = null;
 
@@ -432,6 +460,14 @@ namespace SWEClient.ViewModels
             }
             byte[] data = Encoding.UTF8.GetBytes(xml.ToString());
             Proxy.Instance.Send(data);
+
+            foreach (System.Windows.Window window in System.Windows.Application.Current.Windows)
+            {
+                if (window.DataContext == this)
+                {
+                    window.Close();
+                }
+            }
         }
 
         public bool ConnectToFirma()

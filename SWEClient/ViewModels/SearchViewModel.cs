@@ -193,6 +193,9 @@ namespace SWEClient.ViewModels
                 case "ViewFirma":
                     lViewDoubleClickFirma();
                     break;
+                case "ViewRechnung":
+                    lViewDoubleClickRechnung();
+                    break;
                 case "ViewPerson":
                     lViewDoubleClickPerson();
                     break;
@@ -211,6 +214,16 @@ namespace SWEClient.ViewModels
                     Proxy.Instance.Receive();
                     Proceed();
                     break;
+                case "DeleteFirma":
+                    DeleteFirma();
+                    Proxy.Instance.Send(data);
+                    Proxy.Instance.Receive();
+                    break;
+                case "DeletePerson":
+                    DeletePerson();
+                    Proxy.Instance.Send(data);
+                    Proxy.Instance.Receive();
+                    break;
                 default:
                     //DetailedInformationWindow window = new DetailedInformationWindow();
                     //window.Show();
@@ -219,6 +232,40 @@ namespace SWEClient.ViewModels
         }               
 
         #region FunctionsToCall
+        public void DeleteFirma()
+        {
+            XElement xml = null;
+
+            if(!string.IsNullOrWhiteSpace(Firma.ID))
+            {
+                xml =
+                new XElement("Delete",
+                    new XElement("Firma",
+                        new XElement("ID", Firma.ID)
+                        )
+                        );
+            }
+            
+            data = Encoding.UTF8.GetBytes(xml.ToString());
+        }
+
+        public void DeletePerson()
+        {
+            XElement xml = null;
+
+            if (!string.IsNullOrWhiteSpace(Person.ID))
+            {
+                xml =
+                new XElement("Delete",
+                    new XElement("Person",
+                        new XElement("ID", Person.ID)
+                        )
+                        );
+            }
+
+            data = Encoding.UTF8.GetBytes(xml.ToString());
+        }
+
         public void lViewDoubleClickRechnung()
         {
             AddRechnung window = new AddRechnung(Rechnung);
@@ -259,8 +306,7 @@ namespace SWEClient.ViewModels
                             );
             }
 
-            data = Encoding.UTF8.GetBytes(xml.ToString());           
-            
+            data = Encoding.UTF8.GetBytes(xml.ToString());          
         }
 
         public void SearchPerson()
@@ -312,7 +358,7 @@ namespace SWEClient.ViewModels
                         );
             }
 
-            else if(RechnungSearch.BetragVon != 0 && RechnungSearch.BetragBis != 0)
+            else if(RechnungSearch.BetragVon >= 0 && RechnungSearch.BetragBis != 0)
             {
                 xml =
                 new XElement("Search",
@@ -539,7 +585,7 @@ namespace SWEClient.ViewModels
                     {
                         rechnung.Due = Convert.ToDateTime(item.InnerText);
                     }
-                    if (item.Name == "Zeile")
+                    /*if (item.Name == "Zeile")
                     {
                         Models.Rechnungszeile zeile = new Models.Rechnungszeile();
 
@@ -559,7 +605,7 @@ namespace SWEClient.ViewModels
                             }                            
                         }
                         rechnung.Zeilen.Add(zeile);
-                    }                    
+                    }  */                  
                 }    
                 Rechnungen.Add(rechnung);
             }

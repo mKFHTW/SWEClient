@@ -14,7 +14,8 @@ namespace SWEClient.Models
         public string Kommentar { get; set; }
         public string Nachricht { get; set; }
         public DateTime Datum { get; set; }
-        public DateTime Due { get; set; }
+        public DateTime Due { get; set; }        
+        public string Preis { get; set; }
         public List<Models.Rechnungszeile> Zeilen { get; set; }
 
         public Rechnung()

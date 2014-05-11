@@ -24,5 +24,6 @@
         <Label Content="{Binding SummeNetto}" HorizontalAlignment="Left" Margin="189,575,0,0" VerticalAlignment="Top"/>
         <Label Content="+ 20%" HorizontalAlignment="Left" Margin="189,601,0,0" VerticalAlignment="Top"/>
         <Label Content="{Binding SummeBrutto}" HorizontalAlignment="Left" Margin="189,627,0,0" VerticalAlignment="Top"/>
+        <Button Content="Print" HorizontalAlignment="Left" Margin="10,627,0,0" VerticalAlignment="Top" Width="75" Command="{Binding GeneralCommand}" CommandParameter="Print"/>
     </Grid>
 </Window>

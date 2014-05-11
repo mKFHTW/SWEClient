@@ -44,7 +44,8 @@ namespace SWEClient.ViewModels
             }
         }
 
-        public Models.Firma SelectedFirma { get { return Firma; } set { Firma = value; ItemSelected(); } }
+        public Models.Firma SelectedFirma { get { return Firma; } set { Firma = value; } }
+        //ItemSelected();
 
         public string Name
         {
@@ -101,7 +102,7 @@ namespace SWEClient.ViewModels
 
         public void ItemSelected()
         {
-            Proxy.Instance.Selected = SelectedFirma;
+            Proxy.Instance.Selected = Firma;
              
             foreach (System.Windows.Window window in System.Windows.Application.Current.Windows)
             {
