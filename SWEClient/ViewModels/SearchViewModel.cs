@@ -69,26 +69,40 @@ namespace SWEClient.ViewModels
         #region PropertyChangedLogic
         public string BetragVon
         {
-            get { return RechnungSearch.BetragVon.ToString(); }
-            set { RechnungSearch.BetragVon = Convert.ToInt32(value); RaisePropertyChanged("BetragVon"); }
+            get { return RechnungSearch.BetragVon; }
+            set { RechnungSearch.BetragVon = value; RaisePropertyChanged("BetragVon"); }
         }
 
         public string BetragBis
         {
-            get { return RechnungSearch.BetragBis.ToString(); }
-            set { RechnungSearch.BetragBis = Convert.ToInt32(value); RaisePropertyChanged("BetragBis"); }
+            get { return RechnungSearch.BetragBis; }
+            set { RechnungSearch.BetragBis = value; RaisePropertyChanged("BetragBis"); }
         }
 
-        public DateTime DateBis
+        public string DateBis
         {
-            get { return RechnungSearch.DateBis; }
-            set { RechnungSearch.DateBis = value; RaisePropertyChanged("DateBis"); }
+            get 
+            {
+                if (RechnungSearch.DateBis == DateTime.MinValue)
+                {
+                    return string.Empty;
+                }
+                return RechnungSearch.DateBis.ToString(); 
+            }
+            set { RechnungSearch.DateBis = Convert.ToDateTime(value); RaisePropertyChanged("DateBis"); }
         }        
 
-        public DateTime DateVon
+        public string DateVon
         {
-            get { return RechnungSearch.DateVon; }
-            set { RechnungSearch.DateVon = value; RaisePropertyChanged("DateVon"); }
+            get 
+            {
+                if (RechnungSearch.DateVon == DateTime.MinValue)
+                {
+                    return string.Empty;
+                }
+                return RechnungSearch.DateVon.ToString(); 
+            }
+            set { RechnungSearch.DateVon = Convert.ToDateTime(value); RaisePropertyChanged("DateVon"); }
         }
 
         public string Rechnungsname
@@ -193,22 +207,26 @@ namespace SWEClient.ViewModels
                 case "ViewFirma":
                     lViewDoubleClickFirma();
                     break;
-                case "ViewRechnung":
+                case "ViewRechnung":                    
                     lViewDoubleClickRechnung();
                     break;
                 case "ViewPerson":
                     lViewDoubleClickPerson();
                     break;
                 case "AddFirma":
+                    Firma = new Models.Firma();
                     lViewDoubleClickFirma();
                     break;
                 case "AddPerson":
+                    Person = new Models.Person();
                     lViewDoubleClickPerson();
                     break;
                 case "AddRechnung":
+                    Rechnung = new Models.Rechnung();
                     lViewDoubleClickRechnung();
                     break;
                 case "SearchRechnungen":
+                    Rechnungen.Clear();
                     SearchRechnung();
                     Proxy.Instance.Send(data);
                     Proxy.Instance.Receive();
@@ -348,17 +366,29 @@ namespace SWEClient.ViewModels
         public void SearchRechnung()
         {
             XElement xml = null;
+
+            xml =
+            new XElement("Search");
+            XElement rechnung = new XElement("Rechnung");
+
             if (!string.IsNullOrWhiteSpace(RechnungSearch.Name))
+                rechnung.Add(new XElement("Name", RechnungSearch.Name));
+
+            if (RechnungSearch.DateVon.Year > 2000 && RechnungSearch.DateBis.Year < 2100)
             {
-                xml =
-                new XElement("Search",
-                    new XElement("Rechnung",
-                        new XElement("Name", RechnungSearch.Name)
-                        )
-                        );
+                rechnung.Add(new XElement("DateVon", RechnungSearch.DateVon));
+                rechnung.Add(new XElement("DateBis", RechnungSearch.DateBis));
+
             }
 
-            else if(RechnungSearch.BetragVon >= 0 && RechnungSearch.BetragBis != 0)
+            if (Convert.ToDouble(RechnungSearch.BetragVon) >= 0 && Convert.ToDouble(RechnungSearch.BetragBis) != 0 && Convert.ToDouble(RechnungSearch.BetragBis) > Convert.ToDouble(RechnungSearch.BetragVon))
+            {
+                rechnung.Add(new XElement("BetragVon", RechnungSearch.BetragVon));
+                rechnung.Add(new XElement("BetragBis", RechnungSearch.BetragBis));
+            }
+            xml.Add(rechnung);
+
+            /*else if (RechnungSearch.BetragVon >= 0 && RechnungSearch.BetragBis != 0)
             {
                 xml =
                 new XElement("Search",
@@ -378,7 +408,7 @@ namespace SWEClient.ViewModels
                         new XElement("DateBis", RechnungSearch.DateBis)
                         )
                         );
-            }
+            }*/
 
             data = Encoding.UTF8.GetBytes(xml.ToString());
         }

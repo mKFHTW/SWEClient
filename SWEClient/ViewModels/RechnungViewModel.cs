@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -13,9 +14,11 @@ namespace SWEClient.ViewModels
 {
     class RechnungViewModel : INotifyPropertyChanged
     {
-        Models.Rechnung Rechnung;
-        Models.InputRechnung Input;
+        Models.Rechnung Rechnung;        
         Models.Rechnungszeile Rechnungszeile;
+        Models.Person Person;
+        DateTime date;
+        bool Editable;
 
         ObservableCollection<Models.Rechnungszeile> LineCollection;
 
@@ -27,16 +30,39 @@ namespace SWEClient.ViewModels
             }
         }
 
+        ObservableCollection<Models.Person> PersonCollection;
+
+        public ObservableCollection<Models.Person> Personen
+        {
+            get
+            {
+                return PersonCollection;
+            }
+        }        
+
         public RechnungViewModel(Models.Rechnung param) 
         {
             Rechnung = new Models.Rechnung();
             Rechnungszeile = new Models.Rechnungszeile();
-            Input = new Models.InputRechnung();
+            Person = new Models.Person();
+            
             LineCollection = new ObservableCollection<Models.Rechnungszeile>();
+            PersonCollection = new ObservableCollection<Models.Person>();
+
             Rechnung = param;
+            GetPersonen(); 
+            Editable = true;
 
             if (!string.IsNullOrWhiteSpace(Rechnung.ID))
-                GetLines();
+            { 
+                GetLines(); Editable = false;
+                foreach (Models.Person item in Personen)
+                {
+                    if (item.ID == Rechnung.KundenID)
+                        SelectedPerson = item;
+                }
+                RaisePropertyChanged("Kundenname");
+            }            
         }
 
         #region PropertyChanged
@@ -51,11 +77,15 @@ namespace SWEClient.ViewModels
             }
         }
 
+        public Models.Person SelectedPerson { set { Person = value; Name = Person.Nachname; } }
+
+        public bool Exists { get { return Editable; } }
         public string Kundenname
         {
             get { return Rechnung.Kundenname; }
             set { Rechnung.Kundenname = value; RaisePropertyChanged("Kundenname"); }
         }
+        public string Name { get; set; }
         public string Kommentar
         {
             get { return Rechnung.Kommentar; }
@@ -66,14 +96,30 @@ namespace SWEClient.ViewModels
             get { return Rechnung.Nachricht; }
             set { Rechnung.Nachricht = value; RaisePropertyChanged("Nachricht"); }
         }
-        public DateTime Due
+        public string Datum
         {
-            get { return Rechnung.Due; }
-            set { Rechnung.Due = value; RaisePropertyChanged("Due"); }
+            get
+            {
+                if (Rechnung.Datum == DateTime.MinValue)
+                    return DateTime.Now.Date.ToShortDateString();
+
+                return Rechnung.Datum.ToString("mm/DD/yyyy");
+            }
+            set { Rechnung.Datum = Convert.ToDateTime(value); RaisePropertyChanged("Datum"); }
         }
-        public int Stk
+        public string Due
         {
-            get { return Rechnungszeile.Stk; }
+            get 
+            {
+                if (Rechnung.Due == DateTime.MinValue)
+                    return "";
+                return Rechnung.Due.ToString(); 
+            }
+            set { Rechnung.Due = Convert.ToDateTime(value); RaisePropertyChanged("Due"); }
+        }
+        public string Stk
+        {
+            get { return Rechnungszeile.Stk.ToString(); }
             set { Rechnungszeile.Stk = Convert.ToInt32(value); RaisePropertyChanged("Stk"); }
         }
         public string Artikel
@@ -81,9 +127,9 @@ namespace SWEClient.ViewModels
             get { return Rechnungszeile.Artikel; }
             set { Rechnungszeile.Artikel = value; RaisePropertyChanged("Artikel"); }
         }
-        public double Preis
+        public string Preis
         {
-            get { return Rechnungszeile.Preis; }
+            get { return Rechnungszeile.Preis.ToString(); }
             set { Rechnungszeile.Preis = Convert.ToDouble(value); RaisePropertyChanged("Preis"); }
         }
 
@@ -133,9 +179,23 @@ namespace SWEClient.ViewModels
                 case "Print":
                     Print();
                     break;  
+                case "Changed":
+                    UpdateComboBox();
+                    break;
                 default:                    
                     break;
             }
+        }
+
+        public void UpdateComboBox()
+        {
+            Personen.Clear();            
+
+            foreach (Models.Person item in Personen)
+            {
+                if (item.Vorname.Contains(Kundenname) || item.Nachname.Contains(Kundenname))
+                    Personen.Add(item);
+            }            
         }
 
         private void Print()
@@ -146,9 +206,9 @@ namespace SWEClient.ViewModels
         public void Add()
         {
             Models.Rechnungszeile Line = new Models.Rechnungszeile();
-            Line.Artikel = Input.Artikel;
-            Line.Preis = Input.Preis;
-            Line.Stk = Input.Stk;
+            Line.Artikel = Artikel;
+            Line.Preis = Convert.ToDouble(Preis);
+            Line.Stk = Convert.ToInt32(Stk);
             Rechnung.Zeilen.Add(Line);
             Lines.Add(Line);
 
@@ -157,7 +217,23 @@ namespace SWEClient.ViewModels
         }
         #endregion
 
-        
+        public void GetPersonen()
+        {
+            XElement xml = null;
+
+            //if (string.IsNullOrWhiteSpace(Rechnung.ID))
+            //{
+                xml =
+                new XElement("Search",
+                    new XElement("Personen"                        
+                        )
+                        );
+                byte[] data = Encoding.UTF8.GetBytes(xml.ToString());
+                Proxy.Instance.Send(data);
+                Proxy.Instance.Receive();
+                ProceedPersonen();
+            //}
+        }
 
         public void GetLines()
         {
@@ -174,11 +250,47 @@ namespace SWEClient.ViewModels
                 byte[] data = Encoding.UTF8.GetBytes(xml.ToString());
                 Proxy.Instance.Send(data);
                 Proxy.Instance.Receive();
-                Proceed();
+                ProceedLines();
             }
         }
 
-        public void Proceed()
+        public void ProceedPersonen()
+        {
+            Personen.Clear();
+
+            XmlDocument xml = new XmlDocument();
+            xml.LoadXml(Proxy.Instance.Response);
+
+            XmlElement root = xml.DocumentElement;
+
+            foreach (XmlNode item in root.ChildNodes)
+            {
+                if (item.Name == "Person")
+                {
+                    Models.Person person = new Models.Person();
+
+                    foreach (XmlNode line in item.ChildNodes)
+                    {
+                        if (line.Name == "ID")
+                        {
+                            person.ID = line.InnerText;
+                        }
+                        if (line.Name == "Vorname")
+                        {
+                            person.Vorname = line.InnerText;
+                        }
+                        if (line.Name == "Nachname")
+                        {                            
+                            person.Nachname = line.InnerText;
+                        }
+                    }
+                    
+                    Personen.Add(person);
+                }
+            }
+        }
+
+        public void ProceedLines()
         {
             Lines.Clear();
 

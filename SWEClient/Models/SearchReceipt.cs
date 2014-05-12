@@ -8,8 +8,8 @@ namespace SWEClient.Models
 {
     class SearchReceipt
     {
-        public int BetragVon { get; set; }
-        public int BetragBis { get; set; }
+        public string BetragVon { get; set; }
+        public string BetragBis { get; set; }
         public DateTime DateVon { get; set; }
         public DateTime DateBis { get; set; }
         public string Name { get; set; }

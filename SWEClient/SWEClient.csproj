@@ -89,7 +89,6 @@
     <Compile Include="DetailedInformationWindow.xaml.cs">
       <DependentUpon>DetailedInformationWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Models\InputRechnung.cs" />
     <Compile Include="Models\Kontakt.cs" />
     <Compile Include="Models\Person.cs" />
     <Compile Include="Models\Rechnung.cs" />
