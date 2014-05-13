@@ -105,7 +105,7 @@ namespace SWEClient.ViewModels
 
                 return Rechnung.Datum.ToString("mm/DD/yyyy");
             }
-            set { Rechnung.Datum = Convert.ToDateTime(value); RaisePropertyChanged("Datum"); }
+            set { Rechnung.Datum = DateTime.ParseExact(value.ToString(), "dd.MM.yyyy", CultureInfo.GetCultureInfo("de-de")); RaisePropertyChanged("Datum"); }
         }
         public string Due
         {
@@ -182,6 +182,9 @@ namespace SWEClient.ViewModels
                 case "Changed":
                     UpdateComboBox();
                     break;
+                case "Add":
+                    InsertRechnung();
+                    break;
                 default:                    
                     break;
             }
@@ -215,6 +218,38 @@ namespace SWEClient.ViewModels
             RaisePropertyChanged("SummeBrutto");
             RaisePropertyChanged("SummeNetto");
         }
+
+        public void InsertRechnung()
+        {
+            if (Person != null)
+            {
+                XElement xml = null;
+                new XElement("Insert",
+                    new XElement("Rechnung",
+                        new XElement("ID", Person.ID),
+                        new XElement("Date", Rechnung.Datum),
+                        new XElement("Due", Rechnung.Due),
+                        new XElement("Kommentar", Rechnung.Kommentar),
+                        new XElement("Nachricht", Rechnung.Nachricht)
+                        )
+                        );
+
+                foreach (Models.Rechnungszeile item in Rechnung.Zeilen)
+                {
+                    XElement line = new XElement("Zeile",
+                        new XElement("Artikel", item.Artikel),
+                        new XElement("Menge", item.Stk),
+                        new XElement("Preis", item.Preis)
+                        );
+                    xml.Add(line);
+                }
+
+                byte[] data = Encoding.UTF8.GetBytes(xml.ToString());
+                Proxy.Instance.Send(data);
+                Proxy.Instance.Receive();
+            }
+        }
+
         #endregion
 
         public void GetPersonen()
@@ -327,6 +362,17 @@ namespace SWEClient.ViewModels
             }
             RaisePropertyChanged("SummeBrutto");
             RaisePropertyChanged("SummeNetto");
-        }        
+        }
+        
+        public void Close()
+        {
+            foreach (System.Windows.Window window in System.Windows.Application.Current.Windows)
+            {
+                if (window.DataContext == this)
+                {
+                    window.Close();
+                }
+            }
+        }             
     }
 }
