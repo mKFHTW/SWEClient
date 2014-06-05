@@ -6,10 +6,11 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Configuration;
 
 namespace SWEClient
 {
-    class Proxy
+    public class Proxy
     {
         private static Proxy instance;
         private WebRequest request;
@@ -25,7 +26,7 @@ namespace SWEClient
 
         private Proxy()
         {
-            Firmen = new List<Models.Firma>();
+            Firmen = new List<Models.Firma>();            
         }
 
         public static Proxy Instance
@@ -41,7 +42,7 @@ namespace SWEClient
 
         public void Send(byte[] data)
         {
-            request = WebRequest.Create("http://localhost:8080");
+            request = WebRequest.Create(ConfigurationSettings.AppSettings["Server"]);
             request.Method = "POST";
             request.ContentType = "text/xml";
             request.ContentLength = data.Length;

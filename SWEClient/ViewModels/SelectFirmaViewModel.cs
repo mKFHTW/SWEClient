@@ -80,8 +80,7 @@ namespace SWEClient.ViewModels
                     SearchList();
                     break;
                 case "Closing":
-                    Proxy.Instance.Closed = true;
-                    
+                    Proxy.Instance.Closed = true;                    
                     break;
                 default:
                     break;

@@ -8,6 +8,7 @@ using System.Windows;
 using System.Windows.Input;
 using System.Xml;
 using System.Xml.Linq;
+using System.Windows.Media;
 
 namespace SWEClient.ViewModels
 {
@@ -18,6 +19,8 @@ namespace SWEClient.ViewModels
         bool isPerson = false;
         List<Models.Firma> Firmen;
         int amountFirmen;
+        //Models.Firma ParamFirma;
+        //Models.Person ParamPerson;
 
         public DetailedInformationWindowViewModel()
         {
@@ -27,21 +30,28 @@ namespace SWEClient.ViewModels
 
         public DetailedInformationWindowViewModel(Models.Kontakt param)
         {
+            Color = Brushes.LightGreen;
+            RaisePropertyChanged("Color");
+
             Firmen = new List<Models.Firma>();
             GetFirmen();
             amountFirmen = 0;
 
+            //ParamFirma = new Models.Firma();
+            //ParamPerson = new Models.Person();
+
             Firma = new Models.Firma();
-            Person = new Models.Person();
-            
+            Person = new Models.Person();            
 
             if (param is Models.Firma)
             {
-                Firma = (Models.Firma)param;                
+                //ParamFirma = (Models.Firma)param;
+                Firma = (Models.Firma)param.Clone();             
             }
             else
-            { 
-                Person = (Models.Person)param;
+            {
+                //ParamPerson = (Models.Person)param;
+                Person = (Models.Person)param.Clone();
                 isPerson = true;
             }
         }
@@ -89,7 +99,9 @@ namespace SWEClient.ViewModels
                 return IsFirma == null || IsFirma == true;
             }
         }
-                
+
+        public Brush Color { get; set; }
+
         public string Name
         {
             get { return Firma.Name; }
@@ -337,15 +349,30 @@ namespace SWEClient.ViewModels
         {
             switch (param as string)
             {
-                case "ConnectFirma":
+                case "Changed":
                     if (ConnectToFirma())
                     {
-
+                        Color = Brushes.LightGreen;
+                        RaisePropertyChanged("Color");
                     }
                     else
                     {
+                        Color = Brushes.Red;
+                        RaisePropertyChanged("Color");
+                    }
+                    break;
+                case "ConnectFirma":
+                    if (ConnectToFirma())
+                    {
+                        Color = Brushes.LightGreen;
+                        RaisePropertyChanged("Color");
+                    }
+                    else
+                    {
+                        Color = Brushes.Red;
+                        RaisePropertyChanged("Color");
                         Proxy.Instance.FirmenList = Firmen;
-                        Proxy.Instance.Closed = false;
+                        Proxy.Instance.Closed = false;                        
                         
                         SelectFirma window = new SelectFirma();
 
@@ -355,6 +382,8 @@ namespace SWEClient.ViewModels
                         }                        
                         Firm = Proxy.Instance.Selected.Name;
                         Person.FirmaID = Proxy.Instance.Selected.ID;
+                        Color = Brushes.LightGreen;
+                        RaisePropertyChanged("Color");
                     }
                     break;
 
@@ -376,6 +405,7 @@ namespace SWEClient.ViewModels
             {
                 Person.FirmaID = "";
                 Person.Firm = "";
+                RaisePropertyChanged("Firm"); NotifyStateChanged();
             }
             else
             {
@@ -414,7 +444,7 @@ namespace SWEClient.ViewModels
                         );
             }
 
-            else if(!isPerson && string.IsNullOrWhiteSpace(Firma.ID))
+            else if (!isPerson && string.IsNullOrWhiteSpace(Firma.ID))
             {
                 xml =
                 new XElement("Insert",
@@ -423,43 +453,51 @@ namespace SWEClient.ViewModels
                         new XElement("Firmenname", Firma.Name),
                         new XElement("UID", Firma.UID)
                         )
-                        );                
+                        );
             }
-            else {             
-            switch (isPerson)
+            else
             {
+                switch (isPerson)
+                {
 
-                case true:
-                    xml =
-                new XElement("Update",
-                    new XElement("Person",
-                        new XElement("ID", Person.ID),
-                        new XElement("Vorname", Person.Vorname),
-                        new XElement("Nachname", Person.Nachname),
-                        new XElement("Titel", Person.Titel),
-                        new XElement("Suffix", Person.Suffix),
-                        new XElement("GebDatum", Person.GebDatum),
-                        new XElement("FirmaID", Person.FirmaID)
-                        )
-                        );
-                    break;
+                    case true:
+                        xml =
+                    new XElement("Update",
+                        new XElement("Person",
+                            new XElement("ID", Person.ID),
+                            new XElement("Vorname", Person.Vorname),
+                            new XElement("Nachname", Person.Nachname),
+                            new XElement("Titel", Person.Titel),
+                            new XElement("Suffix", Person.Suffix),
+                            new XElement("GebDatum", Person.GebDatum),
+                            new XElement("FirmaID", Person.FirmaID)
+                            )
+                            );
+                        break;
 
-                case false:
-                    xml =
-                new XElement("Update",
-                    new XElement("Firma",
-                        new XElement("ID", Firma.ID),
-                        new XElement("Firmenname", Firma.Name),
-                        new XElement("UID", Firma.UID)
-                        )
-                        );
-                    break;
-                default:
-                    break;               
+                    case false:
+                        xml =
+                    new XElement("Update",
+                        new XElement("Firma",
+                            new XElement("ID", Firma.ID),
+                            new XElement("Firmenname", Firma.Name),
+                            new XElement("UID", Firma.UID)
+                            )
+                            );
+                        break;
+                    default:
+                        break;
+                }
             }
-            }
+
             byte[] data = Encoding.UTF8.GetBytes(xml.ToString());
             Proxy.Instance.Send(data);
+
+            /*if (isPerson)
+                ParamPerson = Person;
+
+            else
+                ParamFirma = Firma;*/
 
             foreach (System.Windows.Window window in System.Windows.Application.Current.Windows)
             {
@@ -478,13 +516,19 @@ namespace SWEClient.ViewModels
                     amountFirmen++;
                 if (amountFirmen == 2)
                 {
+                    Color = Brushes.Red;
+                    RaisePropertyChanged("Color");
                     return false;
                 }
             }
             if (amountFirmen == 1)
                 return true;
             else
+            {
+                Color = Brushes.Red;
+                RaisePropertyChanged("Color");
                 return false;
+            }
         }
 
         public void GetFirmen()

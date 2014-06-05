@@ -10,10 +10,18 @@
                 <Grid>
                     <GroupBox Header="Suchfilter" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Height="166" Width="596">
                         <Grid x:Name="gridSuchfilter" HorizontalAlignment="Left" Height="144" VerticalAlignment="Top" Width="611" Margin="0,0,-2,0">
-                            <Label x:Name="lbVorname" Content="Vorname" HorizontalAlignment="Left" Margin="10,19,0,0" VerticalAlignment="Top"/>
+                            <Label x:Name="lbVorname" Content="Vorname" HorizontalAlignment="Left" Margin="10,19,0,0" VerticalAlignment="Top"/>                            
                             <Label x:Name="lbNachname" Content="Nachname" HorizontalAlignment="Left" Margin="10,60,0,0" VerticalAlignment="Top"/>
-                            <xctk:WatermarkTextBox Watermark="Vorname eingeben .." x:Name="tBoxVorname" HorizontalAlignment="Left" Height="23" Margin="86,23,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="467" Text="{Binding Vorname}"/>
-                            <xctk:WatermarkTextBox Watermark="Nachname eingeben .." x:Name="tBoxNachname" HorizontalAlignment="Left" Height="23" Margin="86,64,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="467" Text="{Binding Nachname}"/>
+                            <xctk:WatermarkTextBox Watermark="Vorname eingeben .." x:Name="tBoxVorname" HorizontalAlignment="Left" Height="23" Margin="86,23,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="467" Text="{Binding Vorname}">
+                                <xctk:WatermarkTextBox.InputBindings>
+                                    <KeyBinding Command="{Binding GeneralCommand}" CommandParameter="Person" Key="Enter" />
+                                </xctk:WatermarkTextBox.InputBindings>
+                            </xctk:WatermarkTextBox>
+                            <xctk:WatermarkTextBox Watermark="Nachname eingeben .." x:Name="tBoxNachname" HorizontalAlignment="Left" Height="23" Margin="86,64,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="467" Text="{Binding Nachname}">
+                                <xctk:WatermarkTextBox.InputBindings>
+                                    <KeyBinding Command="{Binding GeneralCommand}" CommandParameter="Person" Key="Enter" />
+                                </xctk:WatermarkTextBox.InputBindings>
+                            </xctk:WatermarkTextBox>
                             <Button x:Name="btnSuchfilterSuche" Content="Suche" HorizontalAlignment="Left" Margin="470,114,0,0" VerticalAlignment="Top" Width="52" Command="{Binding GeneralCommand}" CommandParameter="Person"/>
                         </Grid>
                     </GroupBox>
@@ -40,8 +48,16 @@
                         <Grid HorizontalAlignment="Left" Height="144" VerticalAlignment="Top" Width="586" Margin="0,0,-2,0">
                             <Label Content="Name" HorizontalAlignment="Left" Margin="10,19,0,0" VerticalAlignment="Top"/>
                             <Label Content="UID" HorizontalAlignment="Left" Margin="10,60,0,0" VerticalAlignment="Top"/>
-                            <xctk:WatermarkTextBox Watermark="Firmenname eingeben .." HorizontalAlignment="Left" Height="23" Margin="86,23,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="467" Text="{Binding Name}"/>
-                            <xctk:WatermarkTextBox Watermark="UID eingeben .." HorizontalAlignment="Left" Height="23" Margin="86,64,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="467" Text="{Binding UID}"/>
+                            <xctk:WatermarkTextBox Watermark="Firmenname eingeben .." HorizontalAlignment="Left" Height="23" Margin="86,23,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="467" Text="{Binding Name}">
+                            <xctk:WatermarkTextBox.InputBindings>
+                                <KeyBinding Command="{Binding GeneralCommand}" CommandParameter="Firma" Key="Enter" />
+                            </xctk:WatermarkTextBox.InputBindings>
+                            </xctk:WatermarkTextBox>
+                            <xctk:WatermarkTextBox Watermark="UID eingeben .." HorizontalAlignment="Left" Height="23" Margin="86,64,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="467" Text="{Binding UID}">
+                            <xctk:WatermarkTextBox.InputBindings>
+                                <KeyBinding Command="{Binding GeneralCommand}" CommandParameter="Firma" Key="Enter" />
+                            </xctk:WatermarkTextBox.InputBindings>
+                            </xctk:WatermarkTextBox>
                             <Button Content="Suche" HorizontalAlignment="Left" Margin="470,114,0,0" VerticalAlignment="Top" Width="52" Command="{Binding GeneralCommand}" CommandParameter="Firma"/>
                         </Grid>
                     </GroupBox>
@@ -78,7 +94,11 @@
                             <Label Content="bis" HorizontalAlignment="Left" Margin="326,2,0,0" VerticalAlignment="Top"/>
                         </Grid>
                     </GroupBox>
-                    <xctk:WatermarkTextBox Watermark="Kundenname .." HorizontalAlignment="Left" Height="23" Margin="10,141,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="200" Text="{Binding Rechnungsname}"/>
+                    <xctk:WatermarkTextBox Watermark="Kundenname .." HorizontalAlignment="Left" Height="23" Margin="10,141,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="200" Text="{Binding Rechnungsname}">
+                    <xctk:WatermarkTextBox.InputBindings>
+                            <KeyBinding Command="{Binding GeneralCommand}" CommandParameter="SearchRechnungen" Key="Enter" />
+                    </xctk:WatermarkTextBox.InputBindings>
+                    </xctk:WatermarkTextBox>
                     <Button Content="Suche" HorizontalAlignment="Left" Margin="444,141,0,0" VerticalAlignment="Top" Width="75" Command="{Binding GeneralCommand}" CommandParameter="SearchRechnungen"/>
                     <ListView HorizontalAlignment="Left" Height="100" Margin="10,175,0,0" VerticalAlignment="Top" Width="595" ItemsSource="{Binding Rechnungen}" SelectedItem="{Binding SelectedRechnung}">
                         <i:Interaction.Triggers>

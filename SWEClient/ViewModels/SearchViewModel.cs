@@ -15,7 +15,7 @@ using System.Collections.ObjectModel;
 
 namespace SWEClient.ViewModels
 {
-    class SearchViewModel : INotifyPropertyChanged
+    public class SearchViewModel : INotifyPropertyChanged
     {
         Models.Firma Firma;
         Models.Person Person;
@@ -23,7 +23,8 @@ namespace SWEClient.ViewModels
         Models.Rechnung Rechnung;
         byte[] data;
 
-        #region ObservableCollections
+        #region ObservableCollections       
+
         ObservableCollection<Models.Firma> FirmaCollection;
 
         public ObservableCollection<Models.Firma> Firmen
@@ -66,7 +67,8 @@ namespace SWEClient.ViewModels
             RechnungCollection = new ObservableCollection<Models.Rechnung>();
         }
 
-        #region PropertyChangedLogic
+        #region PropertyChangedLogic        
+
         public string BetragVon
         {
             get { return RechnungSearch.BetragVon; }
@@ -79,30 +81,30 @@ namespace SWEClient.ViewModels
             set { RechnungSearch.BetragBis = value; RaisePropertyChanged("BetragBis"); }
         }
 
-        public string DateBis
+        public DateTime DateBis
         {
             get 
             {
                 if (RechnungSearch.DateBis == DateTime.MinValue)
                 {
-                    return string.Empty;
+                    return DateTime.Today;
                 }
-                return RechnungSearch.DateBis.ToString(); 
+                return RechnungSearch.DateBis; 
             }
-            set { RechnungSearch.DateBis = Convert.ToDateTime(value); RaisePropertyChanged("DateBis"); }
-        }        
+            set { RechnungSearch.DateBis = value; RaisePropertyChanged("DateBis"); }
+        }
 
-        public string DateVon
+        public DateTime DateVon
         {
             get 
             {
                 if (RechnungSearch.DateVon == DateTime.MinValue)
                 {
-                    return string.Empty;
+                    return DateTime.Today;
                 }
-                return RechnungSearch.DateVon.ToString(); 
+                return RechnungSearch.DateVon; 
             }
-            set { RechnungSearch.DateVon = Convert.ToDateTime(value); RaisePropertyChanged("DateVon"); }
+            set { RechnungSearch.DateVon = value; RaisePropertyChanged("DateVon"); }
         }
 
         public string Rechnungsname
@@ -135,16 +137,16 @@ namespace SWEClient.ViewModels
             set { Person.Nachname = value; RaisePropertyChanged("Nachname"); }
         }
 
-        public string Datum
+        public DateTime Datum
         {
-            get { return Rechnung.Datum.ToShortDateString(); }
-            set { Rechnung.Datum = Convert.ToDateTime(value); RaisePropertyChanged("Datum"); }
+            get { return Rechnung.Datum; }
+            set { Rechnung.Datum = value; RaisePropertyChanged("Datum"); }
         }
 
-        public string Due
+        public DateTime Due
         {
-            get { return Rechnung.Due.ToShortDateString(); }
-            set { Rechnung.Due = Convert.ToDateTime(value); RaisePropertyChanged("Due"); }
+            get { return Rechnung.Datum; }
+            set { Rechnung.Due = value; RaisePropertyChanged("Due"); }
         }
 
 
@@ -154,7 +156,7 @@ namespace SWEClient.ViewModels
         public Models.Rechnung SelectedRechnung { set { Rechnung = value; } }
 
         public event PropertyChangedEventHandler PropertyChanged;
-        private void RaisePropertyChanged(string propertyName)
+        public void RaisePropertyChanged(string propertyName)
         {
             // take a copy to prevent thread issues
             PropertyChangedEventHandler handler = PropertyChanged;
@@ -166,7 +168,7 @@ namespace SWEClient.ViewModels
         #endregion
 
         #region ButtonICommandImplementation
-        private ICommand _generalCommand;
+        public ICommand _generalCommand;
         public ICommand GeneralCommand
         {
             get
@@ -179,7 +181,7 @@ namespace SWEClient.ViewModels
             }
         }
 
-        private void GeneralCommandMethod(object param)
+        public void GeneralCommandMethod(object param)
         {
             switch (param as string)
             {
@@ -288,18 +290,21 @@ namespace SWEClient.ViewModels
         {
             AddRechnung window = new AddRechnung(Rechnung);
             window.Show();
+            
         }
 
         public void lViewDoubleClickFirma()
         {
             DetailedInformationWindow window = new DetailedInformationWindow(Firma);
             window.Show();
+            
         }
 
         public void lViewDoubleClickPerson()
         {
             DetailedInformationWindow window = new DetailedInformationWindow(Person);
             window.Show();
+            
         }        
 
         public void SearchFirma()
@@ -329,7 +334,8 @@ namespace SWEClient.ViewModels
 
         public void SearchPerson()
         {
-            XElement xml;
+            XElement xml;        
+
             if (string.IsNullOrWhiteSpace(Person.Vorname))
             {
                 xml =
@@ -609,7 +615,7 @@ namespace SWEClient.ViewModels
                     }
                     if (item.Name == "Date")
                     {
-                        rechnung.Datum = Convert.ToDateTime(item.InnerText);
+                        rechnung.Datum = DateTime.Parse(item.InnerText);
                     }
                     if (item.Name == "Due")
                     {

@@ -96,26 +96,26 @@ namespace SWEClient.ViewModels
             get { return Rechnung.Nachricht; }
             set { Rechnung.Nachricht = value; RaisePropertyChanged("Nachricht"); }
         }
-        public string Datum
+        public DateTime Datum
         {
             get
             {
                 if (Rechnung.Datum == DateTime.MinValue)
-                    return DateTime.Now.Date.ToShortDateString();
+                    return DateTime.Now;
 
-                return Rechnung.Datum.ToString("mm/DD/yyyy");
+                return Rechnung.Datum;
             }
-            set { Rechnung.Datum = DateTime.ParseExact(value.ToString(), "dd.MM.yyyy", CultureInfo.GetCultureInfo("de-de")); RaisePropertyChanged("Datum"); }
+            set { Rechnung.Datum = value; RaisePropertyChanged("Datum"); }
         }
-        public string Due
+        public DateTime Due
         {
             get 
             {
                 if (Rechnung.Due == DateTime.MinValue)
-                    return "";
-                return Rechnung.Due.ToString(); 
+                    return DateTime.Now;
+                return Rechnung.Due; 
             }
-            set { Rechnung.Due = Convert.ToDateTime(value); RaisePropertyChanged("Due"); }
+            set { Rechnung.Due = value; RaisePropertyChanged("Due"); }
         }
         public string Stk
         {

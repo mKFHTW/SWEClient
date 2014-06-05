@@ -18,5 +18,6 @@ namespace SWEClient.Models
         public string LieferAdresse { get; set; }
         public string LieferPLZ { get; set; }
         public string LieferOrt { get; set; }
+        public abstract object Clone();
     }
 }

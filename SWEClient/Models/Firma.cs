@@ -6,9 +6,14 @@ using System.Threading.Tasks;
 
 namespace SWEClient.Models
 {
-    class Firma : Kontakt
+    public class Firma : Kontakt, ICloneable
     {
         public string UID { get; set; }
         public string Name { get; set; }
+
+        public override object Clone()
+        {
+            return this.MemberwiseClone();
+        }
     }
 }
